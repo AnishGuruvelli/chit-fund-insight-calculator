@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { format } from "date-fns";
 import { CalendarIcon, HelpCircle, Share, Download } from "lucide-react";
@@ -35,6 +34,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import ChitFundResults from "./ChitFundResults";
+import { prepareChitFundData } from "@/utils/financialCalculations";
 
 const ChitFundCalculator: React.FC = () => {
   const [payableAmount, setPayableAmount] = useState<string>("");
@@ -47,92 +47,6 @@ const ChitFundCalculator: React.FC = () => {
     cashFlows: { date: Date; amount: number }[];
   } | null>(null);
   const [totalPaid, setTotalPaid] = useState<number | null>(null);
-
-  // Generate cash flows helper function
-  const generateCashFlows = (
-    monthlyPayment: number,
-    lumpSumReceived: number,
-    months: number,
-    startDate: Date
-  ): Array<{ amount: number; date: Date }> => {
-    const flows: Array<{ amount: number; date: Date }> = [];
-
-    // Add monthly negative payments
-    for (let i = 0; i < months; i++) {
-      const date = new Date(startDate);
-      date.setMonth(date.getMonth() + i);
-      flows.push({
-        amount: -monthlyPayment,
-        date,
-      });
-    }
-
-    // Add positive lump sum at the end
-    const finalDate = new Date(startDate);
-    finalDate.setMonth(finalDate.getMonth() + months - 1);
-    flows.push({
-      amount: lumpSumReceived,
-      date: finalDate,
-    });
-
-    return flows;
-  };
-
-  // Calculate XIRR using the Newton-Raphson method
-  const calculateXIRR = (cashFlows: Array<{ amount: number; date: Date }>): number => {
-    if (cashFlows.length < 2) {
-      throw new Error("At least two cash flows are required");
-    }
-
-    // Extract values and dates
-    const values = cashFlows.map(cf => cf.amount);
-    const dates = cashFlows.map(cf => cf.date);
-
-    // Convert dates to days from first date
-    const dayDiffs: number[] = dates.map(date => {
-      return (date.getTime() - dates[0].getTime()) / (1000 * 60 * 60 * 24);
-    });
-
-    // Newton-Raphson method to find the root
-    let guess = 0.1; // Initial guess
-    const maxIterations = 100;
-    const tolerance = 0.0000001;
-
-    let iteration = 0;
-    
-    while (iteration < maxIterations) {
-      // Evaluate function and derivative
-      let f = 0;
-      let df = 0;
-      
-      for (let i = 0; i < values.length; i++) {
-        const dayDiff = dayDiffs[i];
-        const factor = Math.pow(1 + guess, dayDiff);
-        f += values[i] / factor;
-        df -= (dayDiff * values[i]) / (factor * (1 + guess));
-      }
-      
-      if (Math.abs(f) < tolerance) {
-        // Converged to a solution
-        break;
-      }
-      
-      // Update guess using Newton-Raphson formula
-      const newGuess = guess - f / df;
-      
-      if (Math.abs(newGuess - guess) < tolerance) {
-        // Converged to a solution
-        guess = newGuess;
-        break;
-      }
-      
-      guess = newGuess;
-      iteration++;
-    }
-
-    // Convert from daily rate to annual rate
-    return Math.pow(1 + guess, 365) - 1;
-  };
 
   const handleCalculate = () => {
     try {
@@ -165,18 +79,11 @@ const ChitFundCalculator: React.FC = () => {
       // Simulate a calculation delay for UX
       setTimeout(() => {
         try {
-          // Generate cash flows
-          const flows = generateCashFlows(payable, received, duration, startDate);
-          console.log("Generated cash flows:", flows);
+          // Use the utility function to calculate XIRR and prepare cash flows
+          const result = prepareChitFundData(payable, duration, received, startDate);
+          console.log("Calculation result:", result);
           
-          // Calculate XIRR
-          const xirrValue = calculateXIRR(flows);
-          console.log("Calculated XIRR:", xirrValue);
-          
-          setResult({
-            xirr: xirrValue,
-            cashFlows: flows
-          });
+          setResult(result);
         } catch (error) {
           console.error("Calculation error:", error);
           toast.error("An error occurred during calculation");

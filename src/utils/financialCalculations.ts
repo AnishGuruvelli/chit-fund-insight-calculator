@@ -1,4 +1,3 @@
-
 /**
  * Calculates the XIRR (Extended Internal Rate of Return) for a series of cash flows
  * @param values Array of cash flow values (negative for outflows, positive for inflows)
@@ -10,10 +9,25 @@ export function calculateXIRR(values: number[], dates: Date[]): number {
     throw new Error("Values and dates arrays must have the same length and contain at least 2 elements");
   }
 
+  // Check if all values are the same - this would cause division by zero
+  const allSameValue = values.every(v => v === values[0]);
+  if (allSameValue) {
+    return 0; // Return 0 instead of trying to calculate
+  }
+
   // Convert dates to days from first date
   const dayDiffs: number[] = dates.map(date => {
     return (date.getTime() - dates[0].getTime()) / (1000 * 60 * 60 * 24);
   });
+
+  // Check if we have at least one positive and one negative value
+  // Otherwise XIRR cannot be calculated
+  const hasPositive = values.some(v => v > 0);
+  const hasNegative = values.some(v => v < 0);
+  
+  if (!hasPositive || !hasNegative) {
+    throw new Error("XIRR calculation requires at least one positive and one negative cash flow");
+  }
 
   // Newton-Raphson method to find the root
   let guess = 0.1; // Initial guess
@@ -30,6 +44,14 @@ export function calculateXIRR(values: number[], dates: Date[]): number {
       break;
     }
     
+    // Make sure dfx is not zero to avoid division by zero
+    if (Math.abs(dfx) < tolerance) {
+      // If derivative is too small, adjust guess slightly and try again
+      guess = guess + 0.01;
+      iteration++;
+      continue;
+    }
+    
     // Update guess using Newton-Raphson formula
     const newGuess = guess - fx / dfx;
     
@@ -39,12 +61,34 @@ export function calculateXIRR(values: number[], dates: Date[]): number {
       break;
     }
     
+    // Check for invalid results
+    if (isNaN(newGuess) || !isFinite(newGuess)) {
+      // Try a different initial guess
+      guess = guess * 0.5;
+      iteration++;
+      continue;
+    }
+    
     guess = newGuess;
     iteration++;
   }
 
+  // Check for non-convergence
+  if (iteration >= maxIterations) {
+    console.warn("XIRR calculation did not converge");
+    return 0;
+  }
+
   // Convert from daily rate to annual rate
-  return Math.pow(1 + guess, 365) - 1;
+  const annualRate = Math.pow(1 + guess, 365) - 1;
+  
+  // Guard against unreasonable results
+  if (isNaN(annualRate) || !isFinite(annualRate) || Math.abs(annualRate) > 1000) {
+    console.warn("XIRR calculation resulted in an unreasonable value:", annualRate);
+    return 0;
+  }
+  
+  return annualRate;
 }
 
 /**
@@ -109,11 +153,21 @@ export function prepareChitFundData(
   values.push(receivedAmount);
   dates.push(new Date(receiveDate));
 
-  // Calculate XIRR
-  const xirr = calculateXIRR(values, dates);
-
-  return {
-    xirr,
-    cashFlows
-  };
+  try {
+    // Calculate XIRR
+    const xirr = calculateXIRR(values, dates);
+    console.log("Calculated XIRR:", xirr);
+    
+    return {
+      xirr,
+      cashFlows
+    };
+  } catch (error) {
+    console.error("XIRR calculation error:", error);
+    // Return a fallback value in case of error
+    return {
+      xirr: 0,
+      cashFlows
+    };
+  }
 }

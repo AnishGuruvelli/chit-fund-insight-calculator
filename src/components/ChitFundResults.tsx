@@ -19,7 +19,7 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   ResponsiveContainer,
   Cell,
 } from "recharts";
@@ -131,18 +131,16 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
                 fontSize={10} 
               />
               <YAxis />
-              <Tooltip 
+              <RechartsTooltip 
                 formatter={(value) => [`₹${parseFloat(value.toString()).toLocaleString()}`, "Amount"]}
                 labelFormatter={(label) => `Date: ${label}`}
               />
-              <Bar 
-                dataKey="amount" 
-                fill="#1E88E5"
-                name="Amount"
-              >
-                {/* Use Cell components to color bars based on positive/negative values */}
+              <Bar dataKey="amount" name="Amount">
                 {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.isPositive ? "#8B5CF6" : "#9333EA"} />
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={entry.isPositive ? "#8B5CF6" : "#9333EA"} 
+                  />
                 ))}
               </Bar>
             </BarChart>
