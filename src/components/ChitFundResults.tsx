@@ -34,6 +34,7 @@ interface ChitFundResultsProps {
     durationMonths: number;
     receivedAmount: number;
     startDate: Date;
+    totalPaid: number;
   };
   onBack: () => void;
   onShare: () => void;
@@ -67,8 +68,8 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
   };
 
   return (
-    <Card className="w-full shadow-lg border-finance-primary/20 overflow-hidden animate-fade-in">
-      <CardHeader className="bg-gradient-to-r from-finance-primary to-finance-secondary text-white rounded-t-lg">
+    <Card className="w-full shadow-lg border-purple-200/20 overflow-hidden animate-fade-in">
+      <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-400 text-white rounded-t-lg">
         <div className="flex justify-between items-center">
           <CardTitle className="text-2xl font-bold">Calculation Results</CardTitle>
           <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/20">
@@ -97,17 +98,20 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
         <div className="space-y-4">
           <h3 className="text-lg font-medium">Input Summary</h3>
           <div className="grid grid-cols-2 gap-y-3 text-sm">
-            <div className="text-gray-500">Payable Amount:</div>
+            <div className="text-gray-500">Payable Amount Every Month:</div>
             <div className="text-right font-medium">₹{inputData.payableAmount.toLocaleString()}</div>
             
             <div className="text-gray-500">Duration:</div>
             <div className="text-right font-medium">{inputData.durationMonths} months</div>
             
-            <div className="text-gray-500">Received Amount:</div>
+            <div className="text-gray-500">Received Amount at the end:</div>
             <div className="text-right font-medium">₹{inputData.receivedAmount.toLocaleString()}</div>
             
             <div className="text-gray-500">Start Date:</div>
             <div className="text-right font-medium">{format(inputData.startDate, "PPP")}</div>
+            
+            <div className="text-gray-500">Total Amount Paid:</div>
+            <div className="text-right font-medium">₹{inputData.totalPaid.toLocaleString()}</div>
           </div>
         </div>
 
@@ -138,7 +142,7 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
               >
                 {/* Use Cell components to color bars based on positive/negative values */}
                 {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.isPositive ? "#26A69A" : "#1E88E5"} />
+                  <Cell key={`cell-${index}`} fill={entry.isPositive ? "#8B5CF6" : "#9333EA"} />
                 ))}
               </Bar>
             </BarChart>

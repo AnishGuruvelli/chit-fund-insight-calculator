@@ -33,7 +33,6 @@ import {
 } from "@/components/ui/tooltip";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { prepareChitFundData } from "@/utils/financialCalculations";
 import { toast } from "sonner";
 import ChitFundResults from "./ChitFundResults";
 
@@ -47,6 +46,93 @@ const ChitFundCalculator: React.FC = () => {
     xirr: number;
     cashFlows: { date: Date; amount: number }[];
   } | null>(null);
+  const [totalPaid, setTotalPaid] = useState<number | null>(null);
+
+  // Generate cash flows helper function
+  const generateCashFlows = (
+    monthlyPayment: number,
+    lumpSumReceived: number,
+    months: number,
+    startDate: Date
+  ): Array<{ amount: number; date: Date }> => {
+    const flows: Array<{ amount: number; date: Date }> = [];
+
+    // Add monthly negative payments
+    for (let i = 0; i < months; i++) {
+      const date = new Date(startDate);
+      date.setMonth(date.getMonth() + i);
+      flows.push({
+        amount: -monthlyPayment,
+        date,
+      });
+    }
+
+    // Add positive lump sum at the end
+    const finalDate = new Date(startDate);
+    finalDate.setMonth(finalDate.getMonth() + months - 1);
+    flows.push({
+      amount: lumpSumReceived,
+      date: finalDate,
+    });
+
+    return flows;
+  };
+
+  // Calculate XIRR using the Newton-Raphson method
+  const calculateXIRR = (cashFlows: Array<{ amount: number; date: Date }>): number => {
+    if (cashFlows.length < 2) {
+      throw new Error("At least two cash flows are required");
+    }
+
+    // Extract values and dates
+    const values = cashFlows.map(cf => cf.amount);
+    const dates = cashFlows.map(cf => cf.date);
+
+    // Convert dates to days from first date
+    const dayDiffs: number[] = dates.map(date => {
+      return (date.getTime() - dates[0].getTime()) / (1000 * 60 * 60 * 24);
+    });
+
+    // Newton-Raphson method to find the root
+    let guess = 0.1; // Initial guess
+    const maxIterations = 100;
+    const tolerance = 0.0000001;
+
+    let iteration = 0;
+    
+    while (iteration < maxIterations) {
+      // Evaluate function and derivative
+      let f = 0;
+      let df = 0;
+      
+      for (let i = 0; i < values.length; i++) {
+        const dayDiff = dayDiffs[i];
+        const factor = Math.pow(1 + guess, dayDiff);
+        f += values[i] / factor;
+        df -= (dayDiff * values[i]) / (factor * (1 + guess));
+      }
+      
+      if (Math.abs(f) < tolerance) {
+        // Converged to a solution
+        break;
+      }
+      
+      // Update guess using Newton-Raphson formula
+      const newGuess = guess - f / df;
+      
+      if (Math.abs(newGuess - guess) < tolerance) {
+        // Converged to a solution
+        guess = newGuess;
+        break;
+      }
+      
+      guess = newGuess;
+      iteration++;
+    }
+
+    // Convert from daily rate to annual rate
+    return Math.pow(1 + guess, 365) - 1;
+  };
 
   const handleCalculate = () => {
     try {
@@ -71,17 +157,32 @@ const ChitFundCalculator: React.FC = () => {
       }
 
       setIsCalculating(true);
+      
+      // Calculate total paid amount
+      const totalAmountPaid = payable * duration;
+      setTotalPaid(totalAmountPaid);
 
       // Simulate a calculation delay for UX
       setTimeout(() => {
-        const resultData = prepareChitFundData(
-          payable,
-          duration,
-          received,
-          startDate
-        );
-        setResult(resultData);
-        setIsCalculating(false);
+        try {
+          // Generate cash flows
+          const flows = generateCashFlows(payable, received, duration, startDate);
+          console.log("Generated cash flows:", flows);
+          
+          // Calculate XIRR
+          const xirrValue = calculateXIRR(flows);
+          console.log("Calculated XIRR:", xirrValue);
+          
+          setResult({
+            xirr: xirrValue,
+            cashFlows: flows
+          });
+        } catch (error) {
+          console.error("Calculation error:", error);
+          toast.error("An error occurred during calculation");
+        } finally {
+          setIsCalculating(false);
+        }
       }, 800);
     } catch (error) {
       console.error("Calculation error:", error);
@@ -92,14 +193,16 @@ const ChitFundCalculator: React.FC = () => {
 
   const resetCalculation = () => {
     setResult(null);
+    setTotalPaid(null);
   };
 
   const handleShare = () => {
     if (result) {
       const text = `Chit Fund XIRR: ${(result.xirr * 100).toFixed(2)}%
-Payable Amount: ${payableAmount}
+Total Paid: ₹${totalPaid?.toLocaleString()}
+Payable Amount Every Month: ₹${payableAmount}
 Duration: ${durationMonths} months
-Received Amount: ${receivedAmount}
+Received Amount at the end: ₹${receivedAmount}
 Start Date: ${format(startDate, "PP")}`;
 
       if (navigator.share) {
@@ -138,7 +241,7 @@ Start Date: ${format(startDate, "PP")}`;
     }
   };
 
-  // Generate month options
+  // Generate month options for every month from 1 to 60
   const monthOptions = [];
   for (let i = 1; i <= 60; i++) {
     monthOptions.push(
@@ -151,8 +254,8 @@ Start Date: ${format(startDate, "PP")}`;
   return (
     <div className="w-full max-w-md mx-auto p-4">
       {!result ? (
-        <Card className="w-full shadow-lg border-finance-primary/20">
-          <CardHeader className="bg-gradient-to-r from-finance-primary to-finance-secondary text-white rounded-t-lg">
+        <Card className="w-full shadow-lg border-purple-200/20">
+          <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-400 text-white rounded-t-lg">
             <CardTitle className="text-2xl font-bold">Chit Fund IRR Calculator</CardTitle>
             <CardDescription className="text-white/90">
               Calculate the Extended Internal Rate of Return (XIRR)
@@ -162,7 +265,7 @@ Start Date: ${format(startDate, "PP")}`;
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="payable-amount" className="text-sm font-medium">
-                  Payable Amount
+                  Payable Amount Every Month
                 </Label>
                 <TooltipProvider>
                   <Tooltip>
@@ -223,7 +326,7 @@ Start Date: ${format(startDate, "PP")}`;
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="received-amount" className="text-sm font-medium">
-                  Received Amount
+                  Received Amount at the end
                 </Label>
                 <TooltipProvider>
                   <Tooltip>
@@ -233,7 +336,7 @@ Start Date: ${format(startDate, "PP")}`;
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent className="w-60">
-                      <p>Enter the amount you received or will receive from the chit fund.</p>
+                      <p>Enter the amount you received or will receive from the chit fund at the end.</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -297,7 +400,7 @@ Start Date: ${format(startDate, "PP")}`;
           </CardContent>
           <CardFooter className="pt-2 pb-4">
             <Button 
-              className="w-full bg-finance-primary hover:bg-finance-primary/90 transition-all transform hover:scale-[0.99] text-white py-6"
+              className="w-full bg-gradient-to-r from-purple-600 to-purple-400 hover:from-purple-700 hover:to-purple-500 transition-all transform hover:scale-[0.99] text-white py-6"
               onClick={handleCalculate}
               disabled={isCalculating}
             >
@@ -322,7 +425,8 @@ Start Date: ${format(startDate, "PP")}`;
             payableAmount: parseFloat(payableAmount),
             durationMonths: parseInt(durationMonths),
             receivedAmount: parseFloat(receivedAmount),
-            startDate
+            startDate,
+            totalPaid: totalPaid || 0
           }}
         />
       )}
