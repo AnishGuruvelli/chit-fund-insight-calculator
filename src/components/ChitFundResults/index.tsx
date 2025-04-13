@@ -13,29 +13,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip as RechartsTooltip,
-  ResponsiveContainer,
-  Cell,
-} from "recharts";
+import { ChitFundResult, ChitFundInputData } from "@/components/ChitFundCalculator/types";
+import ChitFundResultsChart from "./ChitFundResultsChart";
 
 interface ChitFundResultsProps {
-  result: {
-    xirr: number;
-    cashFlows: { date: Date; amount: number }[];
-  };
-  inputData: {
-    payableAmount: number;
-    durationMonths: number;
-    receivedAmount: number;
-    startDate: Date;
-    totalPaid: number;
-  };
+  result: ChitFundResult;
+  inputData: ChitFundInputData;
   onBack: () => void;
   onShare: () => void;
   onDownload: () => void;
@@ -50,14 +33,6 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
 }) => {
   const xirrPercentage = (result.xirr * 100).toFixed(2);
   const isPositive = result.xirr > 0;
-
-  // Prepare chart data
-  const chartData = result.cashFlows.map((cf) => ({
-    date: format(cf.date, "MMM yy"),
-    amount: cf.amount,
-    // Add a flag for positive/negative amounts
-    isPositive: cf.amount >= 0
-  }));
 
   // Style the XIRR result based on value
   const getXirrStyle = () => {
@@ -115,37 +90,7 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
           </div>
         </div>
 
-        <div className="w-full h-40 mt-2">
-          <h3 className="text-base font-medium mb-1">Cash Flow Chart</h3>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={chartData}
-              margin={{ top: 5, right: 5, left: 0, bottom: 15 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-              <XAxis 
-                dataKey="date" 
-                angle={-45} 
-                textAnchor="end" 
-                height={50}
-                fontSize={8} 
-              />
-              <YAxis fontSize={8} />
-              <RechartsTooltip 
-                formatter={(value) => [`₹${parseFloat(value.toString()).toLocaleString()}`, "Amount"]}
-                labelFormatter={(label) => `Date: ${label}`}
-              />
-              <Bar dataKey="amount" name="Amount">
-                {chartData.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={entry.isPositive ? "#8B5CF6" : "#9333EA"} 
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        <ChitFundResultsChart cashFlows={result.cashFlows} />
       </CardContent>
 
       <CardFooter className="flex justify-between pt-2 pb-3 space-x-2">
