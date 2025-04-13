@@ -71,7 +71,7 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
     <Card className="w-full shadow-lg border-purple-200/20 overflow-hidden animate-fade-in">
       <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-400 text-white rounded-t-lg">
         <div className="flex justify-between items-center">
-          <CardTitle className="text-2xl font-bold">Calculation Results</CardTitle>
+          <CardTitle className="text-xl font-bold">Calculation Results</CardTitle>
           <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/20">
             <ArrowLeft className="h-4 w-4 mr-1" />
             Back
@@ -82,22 +82,22 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="pt-6 pb-3 space-y-6">
-        <div className="text-center space-y-2">
+      <CardContent className="pt-4 pb-2 space-y-4">
+        <div className="text-center space-y-1">
           <h3 className="text-sm font-medium text-gray-500">Extended Internal Rate of Return (XIRR)</h3>
-          <div className={`text-5xl font-bold ${getXirrStyle()}`}>
+          <div className={`text-4xl font-bold ${getXirrStyle()}`}>
             {xirrPercentage}%
           </div>
-          <Badge variant={isPositive ? "default" : "destructive"} className="mt-2">
+          <Badge variant={isPositive ? "default" : "destructive"} className="mt-1">
             {isPositive ? "Positive Return" : "Negative Return"}
           </Badge>
         </div>
 
         <Separator />
 
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">Input Summary</h3>
-          <div className="grid grid-cols-2 gap-y-3 text-sm">
+        <div className="space-y-3">
+          <h3 className="text-base font-medium">Input Summary</h3>
+          <div className="grid grid-cols-2 gap-y-2 text-sm">
             <div className="text-gray-500">Payable Amount Every Month:</div>
             <div className="text-right font-medium">₹{inputData.payableAmount.toLocaleString()}</div>
             
@@ -115,8 +115,8 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
           </div>
         </div>
 
-        <div className="w-full h-48 mt-4">
-          <h3 className="text-lg font-medium mb-2">Cash Flow Chart</h3>
+        <div className="w-full h-40 mt-2">
+          <h3 className="text-base font-medium mb-1">Cash Flow Chart</h3>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
@@ -128,9 +128,9 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
                 angle={-45} 
                 textAnchor="end" 
                 height={50}
-                fontSize={10} 
+                fontSize={8} 
               />
-              <YAxis />
+              <YAxis fontSize={8} />
               <RechartsTooltip 
                 formatter={(value) => [`₹${parseFloat(value.toString()).toLocaleString()}`, "Amount"]}
                 labelFormatter={(label) => `Date: ${label}`}
@@ -148,21 +148,21 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
         </div>
       </CardContent>
 
-      <CardFooter className="flex justify-between pt-2 pb-4 space-x-2">
+      <CardFooter className="flex justify-between pt-2 pb-3 space-x-2">
         <Button
           variant="outline"
-          className="flex-1"
+          className="flex-1 text-xs"
           onClick={onShare}
         >
-          <Share className="h-4 w-4 mr-2" />
+          <Share className="h-3 w-3 mr-1" />
           Share
         </Button>
         <Button
           variant="outline"
-          className="flex-1"
+          className="flex-1 text-xs"
           onClick={onDownload}
         >
-          <Download className="h-4 w-4 mr-2" />
+          <Download className="h-3 w-3 mr-1" />
           Download
         </Button>
       </CardFooter>

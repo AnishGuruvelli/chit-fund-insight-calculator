@@ -1,73 +1,49 @@
-# Welcome to your Lovable project
 
-## Project info
+# Chit Fund IRR Calculator - Android App
 
-**URL**: https://lovable.dev/projects/800d7ea4-05cf-4d4f-b6c6-59695c0f37fc
+This project is a Chit Fund IRR (XIRR) Calculator that can be run as a web app or as a native Android application using Capacitor.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- Calculate Extended Internal Rate of Return (XIRR) for chit fund investments
+- Visualize cash flows with interactive charts
+- Export calculation results
+- Responsive design that works well on mobile devices
 
-**Use Lovable**
+## Running the Android App
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/800d7ea4-05cf-4d4f-b6c6-59695c0f37fc) and start prompting.
+To run this project as an Android app:
 
-Changes made via Lovable will be committed automatically to this repo.
+1. Export the project to your own Github repository via the "Export to Github" button
+2. Git pull the project from your own Github repository
+3. Run `npm install` to install the dependencies
+4. Add Android platform by running:
+   ```
+   npx cap add android
+   ```
+5. Run `npm run build` to build the project
+6. Run `npx cap sync` to sync the project to the Android platform
+7. Run `npx cap open android` to open the project in Android Studio
+8. Run the app on an emulator or physical device from Android Studio
 
-**Use your preferred IDE**
+## Web Development
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+To run the project locally for web development:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Building for Production
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```
+npm run build
+```
 
-**Use GitHub Codespaces**
+## Technology Stack
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
 - React
-- shadcn-ui
 - Tailwind CSS
+- Capacitor for mobile app functionality
+- Recharts for data visualization
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/800d7ea4-05cf-4d4f-b6c6-59695c0f37fc) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
