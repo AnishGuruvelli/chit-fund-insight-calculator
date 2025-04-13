@@ -21,6 +21,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Cell,
 } from "recharts";
 
 interface ChitFundResultsProps {
@@ -53,6 +54,8 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
   const chartData = result.cashFlows.map((cf) => ({
     date: format(cf.date, "MMM yy"),
     amount: cf.amount,
+    // Add a flag for positive/negative amounts
+    isPositive: cf.amount >= 0
   }));
 
   // Style the XIRR result based on value
@@ -130,9 +133,14 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
               />
               <Bar 
                 dataKey="amount" 
-                fill={(data: any) => (data.amount < 0 ? "#1E88E5" : "#26A69A")}
+                fill="#1E88E5"
                 name="Amount"
-              />
+              >
+                {/* Use Cell components to color bars based on positive/negative values */}
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.isPositive ? "#26A69A" : "#1E88E5"} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
