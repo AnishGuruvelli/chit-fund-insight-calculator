@@ -1,11 +1,22 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import ChitFundCalculator from "@/components/ChitFundCalculator";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen w-full bg-gradient-to-b from-finance-muted to-white flex flex-col justify-center items-center p-4">
+      <div className="w-full max-w-4xl px-4 py-8">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Chit Fund IRR Calculator</h1>
+          <p className="text-gray-600 max-w-md mx-auto">
+            Calculate the Extended Internal Rate of Return (XIRR) of your chit fund investments
+          </p>
+        </div>
+        
+        <ChitFundCalculator />
+        
+        <div className="mt-12 text-center text-sm text-gray-500">
+          <p>© 2023 Chit Fund IRR Calculator. All rights reserved.</p>
+        </div>
       </div>
     </div>
   );
