@@ -9,19 +9,7 @@ export function calculateXIRR(values: number[], dates: Date[]): number {
     throw new Error("Values and dates arrays must have the same length and contain at least 2 elements");
   }
 
-  // Check if all values are the same - this would cause division by zero
-  const allSameValue = values.every(v => v === values[0]);
-  if (allSameValue) {
-    return 0; // Return 0 instead of trying to calculate
-  }
-
-  // Convert dates to days from first date
-  const dayDiffs: number[] = dates.map(date => {
-    return (date.getTime() - dates[0].getTime()) / (1000 * 60 * 60 * 24);
-  });
-
   // Check if we have at least one positive and one negative value
-  // Otherwise XIRR cannot be calculated
   const hasPositive = values.some(v => v > 0);
   const hasNegative = values.some(v => v < 0);
   
@@ -29,81 +17,97 @@ export function calculateXIRR(values: number[], dates: Date[]): number {
     throw new Error("XIRR calculation requires at least one positive and one negative cash flow");
   }
 
-  // Newton-Raphson method to find the root
-  let guess = 0.1; // Initial guess
-  const maxIterations = 100;
-  const tolerance = 0.0000001;
+  // Convert dates to years from first date for better numerical stability
+  const yearDiffs: number[] = dates.map(date => {
+    return (date.getTime() - dates[0].getTime()) / (1000 * 60 * 60 * 24 * 365);
+  });
 
-  let iteration = 0;
+  // Calculate initial guess based on simple return
+  const totalInflow = values.reduce((sum, v) => v > 0 ? sum + v : sum, 0);
+  const totalOutflow = Math.abs(values.reduce((sum, v) => v < 0 ? sum + v : sum, 0));
+  const maxYears = Math.max(...yearDiffs);
   
-  while (iteration < maxIterations) {
-    const [fx, dfx] = evaluateFunction(guess, values, dayDiffs);
+  // Use simple return to estimate initial rate
+  const simpleReturn = (totalInflow / totalOutflow) - 1;
+  const roughGuess = Math.pow(1 + simpleReturn, 1 / maxYears) - 1;
+
+  // Set reasonable bounds for the search
+  let lowerBound = -0.99; // -99% annual rate
+  let upperBound = Math.min(100, Math.max(1, roughGuess * 10)); // Cap at 10000%
+
+  // Binary search combined with Newton-Raphson for robustness
+  const tolerance = 1e-7;
+  const maxIterations = 50;
+
+  let bestGuess = roughGuess;
+  let bestError = Math.abs(evaluateFunction(bestGuess, values, yearDiffs)[0]);
+
+  for (let iteration = 0; iteration < maxIterations; iteration++) {
+    // Try Newton-Raphson step
+    const [fx, dfx] = evaluateFunction(bestGuess, values, yearDiffs);
     
     if (Math.abs(fx) < tolerance) {
       // Converged to a solution
-      break;
+      return bestGuess;
     }
-    
-    // Make sure dfx is not zero to avoid division by zero
-    if (Math.abs(dfx) < tolerance) {
-      // If derivative is too small, adjust guess slightly and try again
-      guess = guess + 0.01;
-      iteration++;
-      continue;
+
+    // Calculate Newton-Raphson step
+    let newGuess = bestGuess;
+    if (Math.abs(dfx) > tolerance) {
+      newGuess = bestGuess - fx / dfx;
     }
-    
-    // Update guess using Newton-Raphson formula
-    const newGuess = guess - fx / dfx;
-    
-    if (Math.abs(newGuess - guess) < tolerance) {
-      // Converged to a solution
-      guess = newGuess;
-      break;
+
+    // If Newton-Raphson gives a reasonable step, use it
+    if (newGuess > lowerBound && newGuess < upperBound) {
+      const newError = Math.abs(evaluateFunction(newGuess, values, yearDiffs)[0]);
+      if (newError < bestError) {
+        bestGuess = newGuess;
+        bestError = newError;
+        continue;
+      }
     }
-    
-    // Check for invalid results
-    if (isNaN(newGuess) || !isFinite(newGuess)) {
-      // Try a different initial guess
-      guess = guess * 0.5;
-      iteration++;
-      continue;
+
+    // If Newton-Raphson fails, use bisection method
+    const midPoint = (lowerBound + upperBound) / 2;
+    const [fLow] = evaluateFunction(lowerBound, values, yearDiffs);
+    const [fMid] = evaluateFunction(midPoint, values, yearDiffs);
+
+    if (fLow * fMid <= 0) {
+      upperBound = midPoint;
+    } else {
+      lowerBound = midPoint;
     }
-    
-    guess = newGuess;
-    iteration++;
+
+    bestGuess = midPoint;
+    bestError = Math.abs(fMid);
+
+    // Check if we've converged
+    if (Math.abs(upperBound - lowerBound) < tolerance) {
+      return bestGuess;
+    }
   }
 
-  // Check for non-convergence
-  if (iteration >= maxIterations) {
-    console.warn("XIRR calculation did not converge");
-    return 0;
+  // If we haven't converged but have a reasonable guess, return it
+  if (bestError < 0.01 && bestGuess > -1 && bestGuess < 100) {
+    return bestGuess;
   }
 
-  // Convert from daily rate to annual rate
-  const annualRate = Math.pow(1 + guess, 365) - 1;
-  
-  // Guard against unreasonable results
-  if (isNaN(annualRate) || !isFinite(annualRate) || Math.abs(annualRate) > 1000) {
-    console.warn("XIRR calculation resulted in an unreasonable value:", annualRate);
-    return 0;
-  }
-  
-  return annualRate;
+  throw new Error("Failed to converge to a solution");
 }
 
 /**
  * Helper function for XIRR calculation
  * Evaluates the XIRR function and its derivative at a given rate
  */
-function evaluateFunction(guess: number, values: number[], dayDiffs: number[]): [number, number] {
+function evaluateFunction(guess: number, values: number[], yearDiffs: number[]): [number, number] {
   let f = 0;
   let df = 0;
 
   for (let i = 0; i < values.length; i++) {
-    const dayDiff = dayDiffs[i];
-    const factor = Math.pow(1 + guess, dayDiff);
+    const t = yearDiffs[i];
+    const factor = Math.pow(1 + guess, t);
     f += values[i] / factor;
-    df -= (dayDiff * values[i]) / (factor * (1 + guess));
+    df -= t * values[i] / (factor * (1 + guess));
   }
 
   return [f, df];
@@ -127,24 +131,27 @@ export function prepareChitFundData(
   const values: number[] = [];
   const dates: Date[] = [];
 
+  // Clone the start date to avoid modifying the original
+  const baseDate = new Date(startDate);
+  
   // Generate monthly outflows (payments)
   for (let i = 0; i < durationMonths; i++) {
-    const date = new Date(startDate);
-    date.setMonth(startDate.getMonth() + i);
+    const paymentDate = new Date(baseDate);
+    paymentDate.setMonth(baseDate.getMonth() + i);
     
     // Add the monthly payment as a negative cash flow (outflow)
     cashFlows.push({ 
-      date: new Date(date), 
+      date: new Date(paymentDate), 
       amount: -payableAmount 
     });
     values.push(-payableAmount);
-    dates.push(new Date(date));
+    dates.push(new Date(paymentDate));
   }
 
   // Add the received amount as a positive cash flow (inflow)
-  // Assuming it's received at the end of the chit fund period
-  const receiveDate = new Date(startDate);
-  receiveDate.setMonth(startDate.getMonth() + durationMonths - 1);
+  // The received amount should be one month after the last payment
+  const receiveDate = new Date(baseDate);
+  receiveDate.setMonth(baseDate.getMonth() + durationMonths);
   
   cashFlows.push({ 
     date: new Date(receiveDate), 
@@ -156,6 +163,7 @@ export function prepareChitFundData(
   try {
     // Calculate XIRR
     const xirr = calculateXIRR(values, dates);
+    console.log("Cash flows:", values, dates.map(d => d.toISOString()));
     console.log("Calculated XIRR:", xirr);
     
     return {
@@ -171,3 +179,4 @@ export function prepareChitFundData(
     };
   }
 }
+

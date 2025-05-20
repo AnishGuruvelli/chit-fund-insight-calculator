@@ -1,4 +1,3 @@
-
 import React from "react";
 import { format } from "date-fns";
 import { CalendarIcon, HelpCircle } from "lucide-react";
@@ -33,6 +32,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { INPUT_TOOLTIPS, BUTTON_STATES } from '@/constants/ui';
 
 interface ChitFundCalculatorFormProps {
   payableAmount: string;
@@ -72,16 +72,16 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
   return (
     <Card className="w-full shadow-lg border-purple-200/20">
       <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-400 text-white rounded-t-lg">
-        <CardTitle className="text-2xl font-bold">Chit Fund IRR Calculator</CardTitle>
+        <CardTitle className="text-2xl font-bold">Smart math for smarter investments</CardTitle>
         <CardDescription className="text-white/90">
-          Calculate the Extended Internal Rate of Return (XIRR)
+          Turn complex chit fund math into instant, shareable insights
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-6 pb-3 space-y-4">
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label htmlFor="payable-amount" className="text-sm font-medium">
-              Payable Amount Every Month
+              Monthly Investment 💸
             </Label>
             <TooltipProvider>
               <Tooltip>
@@ -91,7 +91,7 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="w-60">
-                  <p>Enter the amount you pay monthly for the chit fund.</p>
+                  <p>How much do you pay each month towards your chitti? 💸</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -100,7 +100,7 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
             <Input
               id="payable-amount"
-              placeholder="10000"
+              placeholder="Your monthly commitment (e.g., ₹10,000)"
               className="pl-8"
               value={payableAmount}
               onChange={(e) => setPayableAmount(e.target.value)}
@@ -113,7 +113,7 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label htmlFor="duration" className="text-sm font-medium">
-              Duration in Months
+              Duration in Months 📅
             </Label>
             <TooltipProvider>
               <Tooltip>
@@ -123,7 +123,7 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="w-60">
-                  <p>Select the total duration of the chit fund in months.</p>
+                  <p>The total number of monthly payments you'll make 📅</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -133,7 +133,7 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
             onValueChange={setDurationMonths}
           >
             <SelectTrigger id="duration">
-              <SelectValue placeholder="Select duration" />
+              <SelectValue placeholder="How long is your chitti? (e.g., 24)" />
             </SelectTrigger>
             <SelectContent>{monthOptions}</SelectContent>
           </Select>
@@ -142,7 +142,7 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label htmlFor="received-amount" className="text-sm font-medium">
-              Received Amount at the end
+              Final Payout 💰
             </Label>
             <TooltipProvider>
               <Tooltip>
@@ -152,7 +152,7 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="w-60">
-                  <p>Enter the amount you received or will receive from the chit fund at the end.</p>
+                  <p>The big reward at the end 💰</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -161,7 +161,7 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
             <Input
               id="received-amount"
-              placeholder="180000"
+              placeholder="The big reward at the end"
               className="pl-8"
               value={receivedAmount}
               onChange={(e) => setReceivedAmount(e.target.value)}
@@ -174,7 +174,7 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label htmlFor="start-date" className="text-sm font-medium">
-              Start Date
+              First Payment Date 📅
             </Label>
             <TooltipProvider>
               <Tooltip>
@@ -184,7 +184,7 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="w-60">
-                  <p>Select the date when you started the chit fund.</p>
+                  <p>When did/will you start paying? 📅</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -216,17 +216,17 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
       </CardContent>
       <CardFooter className="pt-2 pb-4">
         <Button 
-          className="w-full bg-gradient-to-r from-purple-600 to-purple-400 hover:from-purple-700 hover:to-purple-500 transition-all transform hover:scale-[0.99] text-white py-6"
+          className="w-full bg-gradient-to-r from-purple-600 to-purple-400 hover:from-purple-700 hover:to-purple-500 transition-all transform hover:scale-[0.99] text-white py-6 text-lg font-semibold"
           onClick={handleCalculate}
           disabled={isCalculating}
         >
           {isCalculating ? (
             <>
               <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
-              Calculating...
+              Crunching Numbers... 🔄
             </>
           ) : (
-            "Calculate XIRR"
+            "Show Me the Money! 💥"
           )}
         </Button>
       </CardFooter>
