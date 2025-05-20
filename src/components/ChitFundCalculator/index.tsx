@@ -1,25 +1,70 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { prepareChitFundData } from "@/utils/financialCalculations";
 import ChitFundResults from "@/components/ChitFundResults";
 import ChitFundCalculatorForm from "./ChitFundCalculatorForm";
 import { ChitFundResult } from "./types";
 
+// Define a key for localStorage
+const STORAGE_KEY = 'chitFundCalculator';
+
 const ChitFundCalculator: React.FC = () => {
-  const [payableAmount, setPayableAmount] = useState<string>("");
-  const [durationMonths, setDurationMonths] = useState<string>("20");
-  const [receivedAmount, setReceivedAmount] = useState<string>("");
-  const [startDate, setStartDate] = useState<Date>(new Date());
+  // Initialize state with values from localStorage if they exist
+  const [payableAmount, setPayableAmount] = useState<string>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return parsed.payableAmount || "";
+    }
+    return "";
+  });
+
+  const [durationMonths, setDurationMonths] = useState<string>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return parsed.durationMonths || "24";
+    }
+    return "24"; // Default to 24 months
+  });
+
+  const [receivedAmount, setReceivedAmount] = useState<string>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return parsed.receivedAmount || "";
+    }
+    return "";
+  });
+
+  const [startDate, setStartDate] = useState<Date>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return parsed.startDate ? new Date(parsed.startDate) : new Date();
+    }
+    return new Date();
+  });
+
   const [isCalculating, setIsCalculating] = useState(false);
   const [result, setResult] = useState<ChitFundResult | null>(null);
   const [totalPaid, setTotalPaid] = useState<number | null>(null);
+
+  // Save to localStorage whenever values change
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      payableAmount,
+      durationMonths,
+      receivedAmount,
+      startDate: startDate.toISOString()
+    }));
+  }, [payableAmount, durationMonths, receivedAmount, startDate]);
 
   const handleCalculate = () => {
     try {
       // Form validation
       if (!payableAmount || !durationMonths || !receivedAmount) {
-        toast.error("Please fill in all fields");
+        toast.error("Please fill in all required fields");
         return;
       }
 
@@ -27,20 +72,33 @@ const ChitFundCalculator: React.FC = () => {
       const duration = parseInt(durationMonths);
       const received = parseFloat(receivedAmount);
 
+      // Validate numeric values
       if (isNaN(payable) || isNaN(duration) || isNaN(received)) {
-        toast.error("Please enter valid numbers");
+        toast.error("Please enter valid numbers for all fields");
         return;
       }
 
+      // Validate positive values
       if (payable <= 0 || duration <= 0 || received <= 0) {
         toast.error("All values must be positive numbers");
         return;
       }
 
-      setIsCalculating(true);
-      
-      // Calculate total paid amount
+      // Calculate and validate total paid amount
       const totalAmountPaid = payable * duration;
+      
+      // Validate if received amount makes sense
+      if (received <= totalAmountPaid * 0.5) {
+        toast.error("Received amount seems too low. It should be more than half of the total paid amount.");
+        return;
+      }
+
+      if (received >= totalAmountPaid * 2) {
+        toast.error("Received amount seems unusually high. Please verify the amount.");
+        return;
+      }
+
+      setIsCalculating(true);
       setTotalPaid(totalAmountPaid);
 
       // Simulate a calculation delay for UX
@@ -48,19 +106,24 @@ const ChitFundCalculator: React.FC = () => {
         try {
           // Use the utility function to calculate XIRR and prepare cash flows
           const result = prepareChitFundData(payable, duration, received, startDate);
-          console.log("Calculation result:", result);
           
+          // Validate XIRR result
+          if (isNaN(result.xirr) || !isFinite(result.xirr)) {
+            throw new Error("Invalid XIRR calculation result");
+          }
+
+          console.log("Calculation result:", result);
           setResult(result);
         } catch (error) {
           console.error("Calculation error:", error);
-          toast.error("An error occurred during calculation");
+          toast.error("An error occurred during calculation. Please verify your inputs.");
         } finally {
           setIsCalculating(false);
         }
       }, 800);
     } catch (error) {
       console.error("Calculation error:", error);
-      toast.error("An error occurred during calculation");
+      toast.error("An error occurred. Please try again with different values.");
       setIsCalculating(false);
     }
   };
