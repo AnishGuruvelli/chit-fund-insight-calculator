@@ -1,4 +1,4 @@
-package app.lovable.chitfund;
+package io.ionic.starter;
 
 import com.getcapacitor.BridgeActivity;
 

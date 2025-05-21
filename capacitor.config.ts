@@ -1,9 +1,17 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.chitfund',
-  appName: 'Chit Fund Calculator',
-  webDir: 'dist'
+  appId: 'io.ionic.starter',
+  appName: 'ChitX',
+  webDir: 'dist',
+  server: {
+    androidScheme: 'https'
+  },
+  android: {
+    buildOptions: {
+      javaVersion: '17'
+    }
+  }
 };
 
 export default config;
