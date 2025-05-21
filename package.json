@@ -9,7 +9,10 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "jest"
+    "test": "jest",
+    "android": "npm run build && npx cap sync && npx cap open android",
+    "android:live": "npm run build && npx cap sync && npx cap run android",
+    "android:sync": "npm run build && npx cap sync"
   },
   "dependencies": {
     "@capacitor/android": "^7.2.0",
@@ -66,6 +69,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@capacitor/cli": "^7.2.0",
     "@eslint/js": "^9.9.0",
     "@tailwindcss/typography": "^0.5.15",
     "@types/jest": "^29.5.14",
