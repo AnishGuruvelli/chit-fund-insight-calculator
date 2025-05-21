@@ -1,4 +1,231 @@
-# 🎨 Chitti Calculator App – UX & Microcopy Guidelines
+# 🎨 ChitX – UX & Design Guidelines
+
+## 🎯 Core Value Proposition
+
+"Turn complex chit fund math into instant, shareable insights that make you feel smart about your investment choices."
+
+## 🎨 Design System
+
+### Color Palette
+- Primary Purple: #9333EA
+- Dark Purple: #7E22CE
+- Accent Purple: #A855F7
+- Light Purple: #F3E8FF
+- Text Dark: #1F2937
+- Text Light: #F3F4F6
+
+### Typography
+- Primary Font: System font stack
+- Headings: Bold, Purple (#9333EA)
+- Body: Regular, Dark (#1F2937)
+- Accents: Medium, Purple (#A855F7)
+
+### Spacing
+- Base: 0.25rem (4px)
+- Content: 2rem (32px)
+- Components: 1rem (16px)
+- Sections: 4rem (64px)
+
+## 💫 Animations & Transitions
+
+### Splash Screen
+- Duration: 3 seconds
+- Purple gradient background
+- Centered logo with scale animation
+- Sparkles animation effect
+- Smooth fade transition to main app
+
+### Loading States
+- Subtle pulse animations
+- Progress indicators
+- Skeleton loading states
+- Smooth transitions
+
+### Interactions
+- Button hover effects
+- Input focus states
+- Card hover animations
+- Share button interactions
+
+## 🗣️ Voice & Tone
+
+### Language Options
+1. Formal Mode:
+   - "Monthly Investment"
+   - "Duration in Months"
+   - "Final Payout"
+   - "Calculate Returns"
+
+2. Chitti Lingo Mode:
+   - "Monthly Khaata"
+   - "Kitne Mahine"
+   - "Final Lifafa"
+   - "Show Me the Money!"
+
+## 📱 Mobile-First Design
+
+### Touch Targets
+- Minimum size: 44x44px
+- Adequate spacing
+- Clear hit areas
+- Feedback on touch
+
+### Navigation
+- Bottom-aligned actions
+- Swipe gestures
+- Pull-to-refresh
+- Back button support
+
+### Android-Specific
+- Material Design components
+- Native share integration
+- Status bar theming
+- Custom splash screen
+
+## 📊 Results Display
+
+### Performance Badges
+```typescript
+const performanceBadges = {
+  exceptional: {
+    threshold: 25,
+    label: "🔥 Phenomenal Returns!",
+    color: "text-green-600"
+  },
+  excellent: {
+    threshold: 20,
+    label: "💫 Killer Returns!",
+    color: "text-green-500"
+  },
+  good: {
+    threshold: 15,
+    label: "🎯 Smart Choice!",
+    color: "text-blue-500"
+  },
+  decent: {
+    threshold: 12,
+    label: "👍 Better than FD!",
+    color: "text-yellow-500"
+  }
+};
+```
+
+### Share Templates
+```typescript
+const shareTemplate = `
+📊 My Chit Fund Analysis:
+💰 Monthly: ₹{amount}
+📅 Duration: {months} months
+💫 Returns: {xirr}%
+🎯 Performance: {badge}
+
+Calculate yours: {appLink}
+`;
+```
+
+## 🎯 Success Indicators
+
+### User Engagement
+- Time to first calculation
+- Share rate
+- Return visits
+- Feature usage
+
+### Performance
+- Load time < 2s
+- Animation FPS > 60
+- Interaction delay < 100ms
+- App size < 5MB
+
+## 📱 Responsive Breakpoints
+
+### Mobile (< 640px)
+- Single column layout
+- Full-width inputs
+- Stacked cards
+- Bottom navigation
+
+### Tablet (640px - 1024px)
+- Two column layout
+- Side-by-side cards
+- Floating action buttons
+- Enhanced charts
+
+### Desktop (> 1024px)
+- Multi-column layout
+- Advanced visualizations
+- Hover states
+- Keyboard shortcuts
+
+## 🔄 Loading States
+
+### Initial Load
+- Splash screen (3s)
+- Progressive content load
+- Skeleton screens
+- Smooth transitions
+
+### Calculations
+- Progress indicator
+- Animated numbers
+- Result transitions
+- Success animations
+
+## 🎨 Component Guidelines
+
+### Buttons
+- Primary: Purple gradient
+- Secondary: Outlined
+- Disabled: Gray
+- Loading: Pulse animation
+
+### Inputs
+- Clear borders
+- Purple focus ring
+- Validation states
+- Helper text
+
+### Cards
+- White background
+- Purple accents
+- Hover lift effect
+- Shadow on focus
+
+### Icons
+- Consistent size (24px)
+- Purple theme
+- Clear meaning
+- Optional labels
+
+## 📱 Platform Consistency
+
+### Web
+- Hover states
+- Keyboard navigation
+- Desktop optimizations
+- Browser compatibility
+
+### Android
+- Material Design
+- Native patterns
+- Platform animations
+- Hardware back button
+
+## 🌙 Dark Mode (Upcoming)
+
+### Colors
+- Background: #1F2937
+- Surface: #374151
+- Primary: #A855F7
+- Text: #F3F4F6
+
+### Components
+- Elevated surfaces
+- Reduced contrast
+- Subtle shadows
+- Maintained hierarchy
+
+## 🎨 Chitti Calculator App – UX & Microcopy Guidelines
 
 ## 🎯 Core Value Proposition
 
