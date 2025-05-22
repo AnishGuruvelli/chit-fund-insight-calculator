@@ -15,8 +15,8 @@
     "android:sync": "npm run build && npx cap sync"
   },
   "dependencies": {
-    "@capacitor/android": "^7.2.0",
-    "@capacitor/core": "^7.2.0",
+    "@capacitor/android": "^5.5.0",
+    "@capacitor/core": "^5.5.0",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
@@ -69,7 +69,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@capacitor/cli": "^7.2.0",
+    "@capacitor/cli": "^5.5.0",
     "@eslint/js": "^9.9.0",
     "@tailwindcss/typography": "^0.5.15",
     "@types/jest": "^29.5.14",
