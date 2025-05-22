@@ -22,3 +22,36 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Android
+android/app/release/
+android/app/debug/
+android/app/release-key.keystore
+android/keystore.properties
+*.apk
+*.aab
+*.hprof
+
+# iOS
+ios/App/Pods/
+ios/App/App/public/
+ios/App/build/
+ios/App/Podfile.lock
+ios/App/*.xcworkspace/
+ios/App/*.xcodeproj/xcuserdata/
+ios/App/*.xcodeproj/project.xcworkspace/xcuserdata/
+ios/App/App/capacitor.config.json
+
+# System Files
+Thumbs.db
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+www/
+platforms/
+plugins/
