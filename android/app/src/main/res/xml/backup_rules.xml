@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Exclude sensitive financial data from backups -->
+    <exclude domain="sharedpref" path="financial_data.xml"/>
+    <exclude domain="database" path="chit_funds.db"/>
+    <!-- Include app settings -->
+    <include domain="sharedpref" path="app_settings.xml"/>
+</full-backup-content> 
