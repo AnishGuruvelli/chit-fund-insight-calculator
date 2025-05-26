@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+  appId: 'com.anishguruvelli.chitx',
   appName: 'ChitX',
   webDir: 'dist',
   server: {
@@ -9,7 +9,11 @@ const config: CapacitorConfig = {
   },
   android: {
     buildOptions: {
-      javaVersion: '17'
+      keystorePath: 'release-key.keystore',
+      keystoreAlias: 'key0',
+      minSdkVersion: 23,
+      targetSdkVersion: 34,
+      compileSdkVersion: 34
     }
   }
 };
