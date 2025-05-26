@@ -71,6 +71,23 @@
 - Layout responsiveness fixes
 - Touch target optimization
 
+## [1.0.3] - 2024-03-26
+
+### Added
+- Web version deployment on GitHub Pages
+- Enhanced security features for data protection
+- Improved backup handling
+
+### Changed
+- Updated routing configuration for better web compatibility
+- Fixed asset loading in web version
+- Improved build configuration
+
+### Security
+- Enhanced data protection mechanisms
+- Updated backup and data extraction rules
+- Removed unnecessary permissions
+
 ## [Upcoming]
 
 ### Planned Features
