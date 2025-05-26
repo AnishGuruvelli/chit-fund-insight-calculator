@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  base: '/chit-fund-insight-calculator/',
   plugins: [
     react(),
     mode === 'development' &&
