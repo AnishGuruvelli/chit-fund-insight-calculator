@@ -1,3 +1,55 @@
+# Play Store Listing Information
+
+## App Details
+
+- **App Name**: ChitX
+- **Current Version**: 1.0.3
+- **Package Name**: com.anishguruvelli.chitx
+
+## Short Description
+Transform Your Chit Fund Management - Calculate, Track & Grow Smarter with ChitX! 📱
+
+## Full Description
+🌟 Welcome to ChitX - Your Ultimate Chit Fund Management Companion! 🌟
+
+Transform the way you manage your chit funds with ChitX, the most intuitive and comprehensive chit fund calculator app designed specifically for Indian investors. Whether you're a seasoned chit fund participant or just starting out, ChitX makes it effortless to track, calculate, and optimize your chit fund investments.
+
+✨ KEY FEATURES:
+
+📊 Smart EMI Calculations
+• Instant EMI computations with just a few taps
+• Accurate monthly payment breakdowns
+• Flexible interest rate adjustments
+• Custom payment schedule planning
+• Principal and interest split visualization
+
+💰 Investment Tracking
+• Real-time investment portfolio overview
+• Track multiple chit funds simultaneously
+• Comprehensive payment history
+• Due date reminders and notifications
+• Easy-to-read investment summaries
+
+📈 Financial Insights
+• Detailed return on investment analysis
+• Future value projections
+• Investment performance metrics
+• Comparative analysis between different chit funds
+• Visual reports and trends
+
+## Recent Updates (Version 1.0.3)
+• Enhanced security features
+• Improved data protection
+• Better backup handling
+• Performance optimizations
+• Bug fixes and stability improvements
+
+## Privacy Policy
+https://anishguruvelli.github.io/chit-fund-insight-calculator/privacy-policy
+
+## Website
+https://anishguruvelli.github.io/chit-fund-insight-calculator/
+
 # ChitX - Smart Chit Fund Calculator
 
 ## Short Description (80 characters)
