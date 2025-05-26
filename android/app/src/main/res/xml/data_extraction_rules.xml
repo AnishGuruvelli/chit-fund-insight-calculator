@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <data-extraction-rules>
     <cloud-backup>
+        <!-- Include all by default -->
+        <include domain="sharedpref" path="."/>
+        <include domain="database" path="."/>
+        
         <!-- Exclude sensitive financial data -->
         <exclude domain="database" path="chit_funds.db"/>
         <exclude domain="sharedpref" path="financial_data.xml"/>
-        <!-- Include non-sensitive app settings -->
+        
+        <!-- Explicitly include non-sensitive app settings -->
         <include domain="sharedpref" path="app_settings.xml"/>
     </cloud-backup>
     <device-transfer>
-        <!-- Same rules for device transfer -->
+        <!-- Include all by default -->
+        <include domain="sharedpref" path="."/>
+        <include domain="database" path="."/>
+        
+        <!-- Exclude sensitive data -->
         <exclude domain="database" path="chit_funds.db"/>
         <exclude domain="sharedpref" path="financial_data.xml"/>
+        
+        <!-- Explicitly include non-sensitive app settings -->
         <include domain="sharedpref" path="app_settings.xml"/>
     </device-transfer>
 </data-extraction-rules> 
