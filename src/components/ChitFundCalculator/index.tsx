@@ -184,29 +184,49 @@ Start Date: ${startDate.toLocaleDateString()}`;
   };
 
   const handleLoadHistoryEntry = (cashFlows: { date: Date; amount: number }[]) => {
-    // Find the first negative amount (monthly payment)
-    const monthlyPayment = Math.abs(cashFlows.find(cf => cf.amount < 0)?.amount || 0);
-    
-    // Count the number of negative amounts (duration)
-    const duration = cashFlows.filter(cf => cf.amount < 0).length;
-    
-    // Find the last positive amount (received amount)
-    const receivedAmount = cashFlows.find(cf => cf.amount > 0)?.amount || 0;
-    
-    // Get the start date from the first cash flow
-    const startDate = cashFlows[0].date;
+    try {
+      // Find the first negative amount (monthly payment)
+      const monthlyPayment = Math.abs(cashFlows.find(cf => cf.amount < 0)?.amount || 0);
+      
+      // Count the number of negative amounts (duration)
+      const duration = cashFlows.filter(cf => cf.amount < 0).length;
+      
+      // Find the last positive amount (received amount)
+      const receivedAmount = cashFlows.find(cf => cf.amount > 0)?.amount || 0;
+      
+      // Get the start date from the first cash flow
+      const startDate = cashFlows[0].date;
 
-    // Update form values
-    setPayableAmount(monthlyPayment.toString());
-    setDurationMonths(duration.toString());
-    setReceivedAmount(receivedAmount.toString());
-    setStartDate(startDate);
+      // Update form values
+      setPayableAmount(monthlyPayment.toString());
+      setDurationMonths(duration.toString());
+      setReceivedAmount(receivedAmount.toString());
+      setStartDate(startDate);
 
-    // Reset results
-    resetCalculation();
+      // Reset results
+      resetCalculation();
 
-    // Scroll to calculator
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Scroll to calculator
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Trigger calculation
+      setTimeout(() => {
+        handleCalculate();
+      }, 100);
+    } catch (error) {
+      console.error('Error loading history entry:', error);
+      toast.error('Failed to load calculation. Please try again.');
+    }
+  };
+
+  const handleRefreshHistory = () => {
+    // Force a re-render of the history component
+    setResult(prev => {
+      if (prev) {
+        return { ...prev };
+      }
+      return null;
+    });
   };
 
   return (
@@ -240,7 +260,10 @@ Start Date: ${startDate.toLocaleDateString()}`;
         />
       )}
 
-      <SearchHistory onLoadEntry={handleLoadHistoryEntry} />
+      <SearchHistory 
+        onLoadEntry={handleLoadHistoryEntry}
+        onRefresh={handleRefreshHistory}
+      />
     </div>
   );
 };
