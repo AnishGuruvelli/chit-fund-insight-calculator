@@ -3,6 +3,8 @@ import { toast } from "sonner";
 import { prepareChitFundData } from "@/utils/financialCalculations";
 import ChitFundResults from "@/components/ChitFundResults";
 import ChitFundCalculatorForm from "./ChitFundCalculatorForm";
+import { SearchHistory } from "@/components/SearchHistory";
+import { searchHistoryService } from "@/services/searchHistory";
 import { ChitFundResult } from "./types";
 
 // Define a key for localStorage
@@ -112,6 +114,9 @@ const ChitFundCalculator: React.FC = () => {
             throw new Error("Invalid XIRR calculation result");
           }
 
+          // Save to search history
+          searchHistoryService.addEntry(result.cashFlows, result.xirr);
+
           console.log("Calculation result:", result);
           setResult(result);
         } catch (error) {
@@ -178,36 +183,64 @@ Start Date: ${startDate.toLocaleDateString()}`;
     }
   };
 
+  const handleLoadHistoryEntry = (cashFlows: { date: Date; amount: number }[]) => {
+    // Find the first negative amount (monthly payment)
+    const monthlyPayment = Math.abs(cashFlows.find(cf => cf.amount < 0)?.amount || 0);
+    
+    // Count the number of negative amounts (duration)
+    const duration = cashFlows.filter(cf => cf.amount < 0).length;
+    
+    // Find the last positive amount (received amount)
+    const receivedAmount = cashFlows.find(cf => cf.amount > 0)?.amount || 0;
+    
+    // Get the start date from the first cash flow
+    const startDate = cashFlows[0].date;
+
+    // Update form values
+    setPayableAmount(monthlyPayment.toString());
+    setDurationMonths(duration.toString());
+    setReceivedAmount(receivedAmount.toString());
+    setStartDate(startDate);
+
+    // Reset results
+    resetCalculation();
+
+    // Scroll to calculator
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <div className="w-full max-w-md mx-auto p-4">
-      {!result ? (
-        <ChitFundCalculatorForm
-          payableAmount={payableAmount}
-          setPayableAmount={setPayableAmount}
-          durationMonths={durationMonths}
-          setDurationMonths={setDurationMonths}
-          receivedAmount={receivedAmount}
-          setReceivedAmount={setReceivedAmount}
-          startDate={startDate}
-          setStartDate={setStartDate}
-          isCalculating={isCalculating}
-          handleCalculate={handleCalculate}
-        />
-      ) : (
-        <ChitFundResults 
-          result={result} 
-          onBack={resetCalculation} 
-          onShare={handleShare}
-          onDownload={handleDownload}
+    <div className="space-y-8">
+      <ChitFundCalculatorForm
+        payableAmount={payableAmount}
+        setPayableAmount={setPayableAmount}
+        durationMonths={durationMonths}
+        setDurationMonths={setDurationMonths}
+        receivedAmount={receivedAmount}
+        setReceivedAmount={setReceivedAmount}
+        startDate={startDate}
+        setStartDate={setStartDate}
+        isCalculating={isCalculating}
+        handleCalculate={handleCalculate}
+      />
+
+      {result && (
+        <ChitFundResults
+          result={result}
           inputData={{
             payableAmount: parseFloat(payableAmount),
             durationMonths: parseInt(durationMonths),
             receivedAmount: parseFloat(receivedAmount),
             startDate,
-            totalPaid: totalPaid || 0
+            totalPaid: totalPaid || 0,
           }}
+          onBack={resetCalculation}
+          onShare={handleShare}
+          onDownload={handleDownload}
         />
       )}
+
+      <SearchHistory onLoadEntry={handleLoadHistoryEntry} />
     </div>
   );
 };
