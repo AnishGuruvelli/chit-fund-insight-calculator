@@ -84,7 +84,9 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({ onLoadEntry, onRef
           const monthlyPayment = Math.abs(entry.cashFlows.find(cf => cf.amount < 0)?.amount || 0);
           const duration = entry.cashFlows.filter(cf => cf.amount < 0).length;
           const receivedAmount = entry.cashFlows.find(cf => cf.amount > 0)?.amount || 0;
-          const startDate = entry.cashFlows[0]?.date ? new Date(entry.cashFlows[0].date).toLocaleDateString() : 'N/A';
+          const startDate = entry.cashFlows[0]?.date ? new Date(entry.cashFlows[0].date) : null;
+          const endDate = entry.cashFlows[entry.cashFlows.length - 1]?.date ? new Date(entry.cashFlows[entry.cashFlows.length - 1].date) : null;
+          const totalInvestment = monthlyPayment * duration;
 
           return (
             <div
@@ -140,11 +142,13 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({ onLoadEntry, onRef
                   <div className="mt-2 text-sm text-gray-700 space-y-1">
                     <p>Monthly Payment: ₹{monthlyPayment.toLocaleString()}</p>
                     <p>Duration: {duration} months</p>
+                    <p>Total Investment: ₹{totalInvestment.toLocaleString()}</p>
                     <p>Received Amount: ₹{receivedAmount.toLocaleString()}</p>
-                    <p>Start Date: {startDate}</p>
+                    <p>Start Date: {startDate ? startDate.toLocaleDateString() : 'N/A'}</p>
+                    <p>End Date: {endDate ? endDate.toLocaleDateString() : 'N/A'}</p>
                   </div>
                 </div>
-                <div className="mt-4 sm:mt-0">
+                <div className="mt-4 sm:mt-0 flex flex-col items-end">
                   <button
                     onClick={() => handleLoadEntry(entry)}
                     className="p-2 text-blue-500 hover:text-blue-700"
@@ -154,7 +158,7 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({ onLoadEntry, onRef
                   </button>
                   <button
                     onClick={() => handleDelete(entry.id)}
-                    className="p-2 text-red-500 hover:text-red-700"
+                    className="p-2 text-red-500 hover:text-red-700 mt-2"
                     title="Delete this entry"
                   >
                     <TrashIcon className="w-5 h-5" />

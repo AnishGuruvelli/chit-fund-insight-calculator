@@ -11,6 +11,7 @@
     "preview": "vite preview",
     "test": "jest",
     "android": "npm run build && npx cap sync && npx cap open android",
+    "build:android": "npm run build && npx cap sync android",
     "android:live": "npm run build && npx cap sync && npx cap run android",
     "android:sync": "npm run build && npx cap sync"
   },
