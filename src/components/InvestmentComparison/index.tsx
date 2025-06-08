@@ -10,14 +10,14 @@ interface InvestmentComparisonProps {
 
 const getBarColor = (name: string) => {
   const colors = {
-    'Your Chitti': 'url(#chittiGradient)',
-    'Large Cap Stocks': 'url(#largeCapGradient)',
-    'Mid Cap Stocks': 'url(#midCapGradient)',
-    'Small Cap Stocks': 'url(#smallCapGradient)',
-    'Gold': 'url(#goldGradient)',
-    'Fixed Deposit': 'url(#fdGradient)'
+    'Your Chitti': '#8B5CF6', // A distinct purple
+    'Large Cap Stocks': '#3B82F6', // Blue
+    'Mid Cap Stocks': '#06B6D4', // Cyan
+    'Small Cap Stocks': '#10B981', // Emerald
+    'Gold': '#F59E0B', // Amber
+    'Fixed Deposit': '#6B7280' // Gray
   };
-  return colors[name] || 'url(#defaultGradient)';
+  return colors[name] || '#8884d8'; // Default purple
 };
 
 const InvestmentComparison: React.FC<InvestmentComparisonProps> = ({ xirr, isLoading = false }) => {
@@ -64,13 +64,43 @@ const InvestmentComparison: React.FC<InvestmentComparisonProps> = ({ xirr, isLoa
             <YAxis 
               type="category" 
               dataKey="name" 
-              tick={{ fill: '#4A5568', fontSize: 12, fontWeight: 'bold' }}
-              width={120}
-              hide={false}
+              tickLine={false} 
               axisLine={false}
-              tickLine={false}
+              tick={({ x, y, payload }) => {
+                const entry = data.find(item => item.name === payload.value);
+                return (
+                  <g transform={`translate(${x},${y})`}>
+                    <text 
+                      x={-5} 
+                      y={0} 
+                      dy={5} 
+                      textAnchor="end" 
+                      fill="#4A5568" 
+                      fontSize={12}
+                      fontWeight="bold"
+                    >
+                      <tspan>{entry?.icon} </tspan>
+                      <tspan>{payload.value}</tspan>
+                    </text>
+                  </g>
+                );
+              }}
+              width={120}
             />
-            <Bar dataKey="returns" fill="#8884d8" barSize={20} radius={[0, 10, 10, 0]} />
+            <Bar 
+              dataKey="returns" 
+              fill={(entry) => getBarColor(entry.name)}
+              barSize={20} 
+              radius={[0, 10, 10, 0]}
+              label={{
+                position: 'right',
+                formatter: (value: number) => `${value.toFixed(1)}%`,
+                fill: '#4b5563',
+                fontSize: 12,
+                fontWeight: 600,
+                dx: 4
+              }}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>
