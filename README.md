@@ -1,7 +1,7 @@
 # ChitX - Chit Fund Management Calculator
 
 [![GitHub Pages](https://img.shields.io/badge/Web-GitHub%20Pages-blue)](https://anishguruvelli.github.io/chit-fund-insight-calculator/)
-[![Play Store](https://img.shields.io/badge/Android-Play%20Store-green)](https://play.google.com/store/apps)
+[![Play Store](https://img.shields.io/badge/Android-Play%20Store-green)](https://play.google.com/store/apps/details?id=com.anishguruvelli.chitx)
 [![Version](https://img.shields.io/badge/version-1.0.3-purple)](https://github.com/AnishGuruvelli/chit-fund-insight-calculator/releases)
 
 A modern, user-friendly calculator for managing chit fund investments. Available both as a web application and Android app.
