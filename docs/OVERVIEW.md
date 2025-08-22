@@ -8,7 +8,7 @@ ChitX is a specialized **Chit Fund XIRR Calculator** that helps users discover t
 
 ## Platforms
 - **Web App**: https://anishguruvelli.github.io/chit-fund-insight-calculator/
-- **Android App**: Available on Google Play Store
+- **Android App**: [Available on Google Play Store](https://play.google.com/store/apps/details?id=com.anishguruvelli.chitx&pli=1)
 
 ## Current Version
 - **Version**: 1.0.3
@@ -84,7 +84,7 @@ ChitX is a specialized **Chit Fund XIRR Calculator** that helps users discover t
 ## Links
 - **GitHub Repository**: https://github.com/AnishGuruvelli/chit-fund-insight-calculator
 - **Web App**: https://anishguruvelli.github.io/chit-fund-insight-calculator/
-- **Play Store**: [ChitX on Google Play]
+- **Play Store**: [ChitX on Google Play Store](https://play.google.com/store/apps/details?id=com.anishguruvelli.chitx&pli=1)
 
 ## Contact
 For support or inquiries, please open an issue on GitHub.
