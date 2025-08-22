@@ -138,7 +138,6 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
 
         <ShareResults
           data={shareData}
-          onDownload={onDownload}
         />
 
         <ChitFundResultsChart cashFlows={result.cashFlows} />

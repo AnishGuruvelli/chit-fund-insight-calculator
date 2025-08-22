@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
 import { INVESTMENT_COMPARISONS } from '@/constants/ui';
 import { motion } from 'framer-motion';
 
@@ -8,8 +8,8 @@ interface InvestmentComparisonProps {
   isLoading?: boolean;
 }
 
-const getBarColor = (name: string) => {
-  const colors = {
+const getBarColor = (name: string): string => {
+  const colors: Record<string, string> = {
     'Your Chitti': '#8B5CF6', // A distinct purple
     'Large Cap Stocks': '#3B82F6', // Blue
     'Mid Cap Stocks': '#06B6D4', // Cyan
@@ -89,7 +89,7 @@ const InvestmentComparison: React.FC<InvestmentComparisonProps> = ({ xirr, isLoa
             />
             <Bar 
               dataKey="returns" 
-              fill={(entry) => getBarColor(entry.name)}
+              fill="#8884d8"
               barSize={20} 
               radius={[0, 10, 10, 0]}
               label={{
@@ -100,7 +100,11 @@ const InvestmentComparison: React.FC<InvestmentComparisonProps> = ({ xirr, isLoa
                 fontWeight: 600,
                 dx: 4
               }}
-            />
+            >
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={getBarColor(entry.name)} />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/chit-fund-insight-calculator/',
+  base: './',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',

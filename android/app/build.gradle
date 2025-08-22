@@ -1,14 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
+    lint {
+        disable 'UnsanitizedFilenameFromContentProvider'
+    }
     namespace "com.anishguruvelli.chitx"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "com.anishguruvelli.chitx"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 7
-        versionName "1.2.0"
+        versionCode 20
+        versionName "1.2.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -30,9 +33,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-    lintOptions {
-        disable 'UnsanitizedFilenameFromContentProvider'
     }
 }
 

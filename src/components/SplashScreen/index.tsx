@@ -1,4 +1,5 @@
-import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
 import { PiggyBank, TrendingUp, IndianRupee } from "lucide-react";
 
 interface SplashScreenProps {
@@ -6,6 +7,14 @@ interface SplashScreenProps {
 }
 
 const SplashScreen = ({ onComplete }: SplashScreenProps) => {
+  // Auto-complete after animation sequence
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      onComplete();
+    }, 3000); // Complete after 3 seconds
+
+    return () => clearTimeout(timer);
+  }, [onComplete]);
   return (
     <motion.div
       initial={{ opacity: 0 }}
