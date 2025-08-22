@@ -13,7 +13,7 @@ ChitX is a specialized **Chit Fund XIRR Calculator** that helps users discover t
 ## Current Version
 - **Version**: 1.0.3
 - **Status**: Production Ready
-- **Platforms**: Web, Android
+- **Platforms**: Web, Android3
 
 ## Technology Stack
 - **Frontend**: React 18, TypeScript 5.5
