@@ -27,7 +27,11 @@ const ChitFundResultsChart: React.FC<ChitFundResultsChartProps> = ({ cashFlows }
   }));
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: {
+    active?: boolean;
+    payload?: Array<{ payload: { date: string; amount: number; isPositive: boolean; formattedAmount: string; type: string } }>;
+    label?: string;
+  }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (

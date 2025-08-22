@@ -58,7 +58,7 @@ const ChitFundCalculator: React.FC = () => {
       payableAmount,
       durationMonths,
       receivedAmount,
-      startDate: startDate.toISOString()
+      startDate: (startDate instanceof Date ? startDate : new Date(startDate)).toISOString()
     }));
   }, [payableAmount, durationMonths, receivedAmount, startDate]);
 
@@ -195,7 +195,8 @@ Start Date: ${startDate.toLocaleDateString()}`;
       const receivedAmount = cashFlows.find(cf => cf.amount > 0)?.amount || 0;
       
       // Get the start date from the first cash flow
-      const startDate = cashFlows[0].date;
+      const startDateRaw = cashFlows[0].date;
+      const startDate = startDateRaw instanceof Date ? startDateRaw : new Date(startDateRaw);
 
       // Update form values
       setPayableAmount(monthlyPayment.toString());

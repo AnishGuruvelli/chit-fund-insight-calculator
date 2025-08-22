@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { INPUT_TOOLTIPS, BUTTON_STATES } from '@/constants/ui';
+
 
 interface ChitFundCalculatorFormProps {
   payableAmount: string;
