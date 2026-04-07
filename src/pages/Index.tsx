@@ -1,8 +1,10 @@
 import ChitFundCalculator from "@/components/ChitFundCalculator";
 import SplashScreen from "@/components/SplashScreen";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { FirstVisitOnboarding } from "@/components/FirstVisitOnboarding";
 import { Sparkles, Calculator, TrendingUp, Share2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -99,15 +101,6 @@ const FeatureCard = ({ icon, title, description, color }: {
 const Index = () => {
   const [showSplash, setShowSplash] = useState(true);
 
-  useEffect(() => {
-    // Keep splash screen visible for 3 seconds
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <>
       <AnimatePresence mode="wait">
@@ -118,15 +111,18 @@ const Index = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="min-h-screen w-full bg-gradient-to-b from-purple-100 via-white to-purple-50"
+            className="min-h-screen w-full bg-gradient-to-b from-purple-100 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950"
           >
-            {/* Hero Section with increased top padding */}
-            <motion.div 
+            <FirstVisitOnboarding />
+            <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
               className="w-full bg-gradient-to-r from-purple-600 to-purple-400 text-white py-16 md:py-20 px-4 relative overflow-hidden"
             >
+              <div className="absolute top-4 right-4 z-20">
+                <ThemeToggle />
+              </div>
               <motion.div
                 animate={{ 
                   scale: [1, 1.2, 1],
@@ -212,26 +208,25 @@ const Index = () => {
                   type: "spring",
                   bounce: 0.3
                 }}
-                className="bg-white/90 backdrop-blur-sm rounded-lg shadow-xl p-4 md:p-6 border border-purple-100"
+                className="bg-white/90 dark:bg-card/90 backdrop-blur-sm rounded-lg shadow-xl p-4 md:p-6 border border-purple-100 dark:border-purple-900/50"
                 whileHover={{ boxShadow: "0 20px 25px -5px rgba(147, 51, 234, 0.1), 0 10px 10px -5px rgba(147, 51, 234, 0.04)" }}
               >
                 <ChitFundCalculator />
               </motion.div>
 
-              {/* Footer */}
-              <motion.footer 
+              <motion.footer
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.8 }}
-                className="mt-8 md:mt-12 text-center text-sm text-gray-500"
+                className="mt-8 md:mt-12 text-center text-sm text-muted-foreground"
               >
-                <motion.p 
+                <motion.p
                   className="mb-2"
-                  whileHover={{ scale: 1.05, color: "#9333ea" }}
+                  whileHover={{ scale: 1.05 }}
                 >
                   ✨ Turn complex chit fund math into instant, shareable insights ✨
                 </motion.p>
-                <p>© 2024 Chit Fund IRR Calculator. All rights reserved.</p>
+                <p>© 2026 ChitX — Chit Fund XIRR Calculator. All rights reserved.</p>
               </motion.footer>
             </div>
           </motion.div>

@@ -24,6 +24,13 @@ export interface ChittiTerms {
   receivedAmount: string;
   startDate: string;
   calculate: string;
+  loading: string;
+  tooltips: {
+    monthlyPayment: string;
+    duration: string;
+    receivedAmount: string;
+    startDate: string;
+  };
 }
 
 export interface ChittiLanguageOptions {

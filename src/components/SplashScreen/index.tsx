@@ -7,14 +7,14 @@ interface SplashScreenProps {
 }
 
 const SplashScreen = ({ onComplete }: SplashScreenProps) => {
-  // Auto-complete after animation sequence
   React.useEffect(() => {
     const timer = setTimeout(() => {
       onComplete();
-    }, 3000); // Complete after 3 seconds
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, [onComplete]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -22,6 +22,13 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-purple-600 to-purple-400"
     >
+      <button
+        type="button"
+        onClick={onComplete}
+        className="absolute top-6 right-6 z-[60] rounded-full px-4 py-2 text-sm font-medium text-white/90 bg-white/15 hover:bg-white/25 backdrop-blur-sm border border-white/20 transition-colors"
+      >
+        Skip
+      </button>
       <div className="relative w-32 h-32 md:w-40 md:h-40">
         {/* Background glow effect */}
         <motion.div

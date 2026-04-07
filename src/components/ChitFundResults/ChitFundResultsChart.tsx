@@ -14,9 +14,14 @@ import {
 
 interface ChitFundResultsChartProps {
   cashFlows: { date: Date; amount: number }[];
+  /** Tailwind height classes for the chart container */
+  chartClassName?: string;
 }
 
-const ChitFundResultsChart: React.FC<ChitFundResultsChartProps> = ({ cashFlows }) => {
+const ChitFundResultsChart: React.FC<ChitFundResultsChartProps> = ({
+  cashFlows,
+  chartClassName = "h-56 md:h-72 min-h-[14rem]",
+}) => {
   // Prepare chart data
   const chartData = cashFlows.map((cf) => ({
     date: format(cf.date, "MMM yy"),
@@ -64,7 +69,7 @@ const ChitFundResultsChart: React.FC<ChitFundResultsChartProps> = ({ cashFlows }
         </div>
       </div>
       
-      <div className="h-40">
+      <div className={chartClassName}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
