@@ -108,6 +108,9 @@ const InvestmentComparison: React.FC<InvestmentComparisonProps> = ({ xirr, isLoa
           </BarChart>
         </ResponsiveContainer>
       </div>
+      <p className="mt-4 text-xs text-center text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+        Reference rates are illustrative long-term averages, not live quotes or guarantees. Markets and bank rates change; use this chart for context, not as investment advice.
+      </p>
     </motion.div>
   );
 };

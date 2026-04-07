@@ -29,12 +29,28 @@ import {
   TooltipTrigger
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { ChittiTerms } from "@/types/ui";
+import { format, subYears } from "date-fns";
 import { CalendarIcon, HelpCircle } from "lucide-react";
 import React from "react";
 
+const QUICK_AMOUNTS = [5_000, 10_000, 25_000, 50_000, 100_000];
+
+export type FormFieldKey = "payableAmount" | "durationMonths" | "receivedAmount" | "startDate";
+
+export interface FormErrors {
+  payableAmount?: string;
+  durationMonths?: string;
+  receivedAmount?: string;
+  startDate?: string;
+}
 
 interface ChitFundCalculatorFormProps {
+  terms: ChittiTerms;
+  /** Short title when comparing two schemes (e.g. "Scheme A") */
+  schemeHeader?: string;
+  /** Prefix for input ids when multiple forms mount (accessibility) */
+  fieldIdPrefix?: string;
   payableAmount: string;
   setPayableAmount: (value: string) => void;
   durationMonths: string;
@@ -45,9 +61,15 @@ interface ChitFundCalculatorFormProps {
   setStartDate: (date: Date) => void;
   isCalculating: boolean;
   handleCalculate: () => void;
+  formErrors: FormErrors;
+  onTryExample: () => void;
+  onResetForm: () => void;
 }
 
 const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
+  terms,
+  schemeHeader,
+  fieldIdPrefix = "",
   payableAmount,
   setPayableAmount,
   durationMonths,
@@ -57,9 +79,11 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
   startDate,
   setStartDate,
   isCalculating,
-  handleCalculate
+  handleCalculate,
+  formErrors,
+  onTryExample,
+  onResetForm
 }) => {
-  // Generate month options for every month from 1 to 60
   const monthOptions = [];
   for (let i = 1; i <= 60; i++) {
     monthOptions.push(
@@ -69,125 +93,180 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
     );
   }
 
+  const pid = (s: string) => (fieldIdPrefix ? `${fieldIdPrefix}${s}` : s);
+
   return (
-    <Card className="w-full shadow-lg border-purple-200/20">
+    <Card className="w-full shadow-lg border-purple-200/20 dark:border-purple-900/40">
       <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-400 text-white rounded-t-lg">
-        <CardTitle className="text-2xl font-bold">Smart math for smarter investments</CardTitle>
+        <CardTitle className={schemeHeader ? "text-xl font-bold" : "text-2xl font-bold"}>
+          {schemeHeader ?? "Smart math for smarter investments"}
+        </CardTitle>
         <CardDescription className="text-white/90">
-          Turn complex chit fund math into instant, shareable insights
+          {schemeHeader
+            ? "Enter this scheme’s numbers, then calculate."
+            : "Turn complex chit fund math into instant, shareable insights"}
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-6 pb-3 space-y-4">
+        <div className="flex flex-wrap gap-2 pb-2 border-b border-border">
+          <Button type="button" variant="secondary" size="sm" onClick={onTryExample}>
+            Try example
+          </Button>
+          <Button type="button" variant="outline" size="sm" onClick={onResetForm}>
+            Reset form
+          </Button>
+        </div>
+
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="payable-amount" className="text-sm font-medium">
-              Monthly Investment 💸
+            <Label htmlFor={pid("payable-amount")} className="text-sm font-medium">
+              {terms.monthlyPayment}
             </Label>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-6 w-6">
+                  <Button variant="ghost" size="icon" className="h-6 w-6" aria-label="Help: monthly amount">
                     <HelpCircle className="h-4 w-4 text-muted-foreground" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="w-60">
-                  <p>How much do you pay each month towards your chitti? 💸</p>
+                  <p>{terms.tooltips.monthlyPayment}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
+          <div className="flex flex-wrap gap-2">
+            {QUICK_AMOUNTS.map((amt) => (
+              <Button
+                key={amt}
+                type="button"
+                variant={payableAmount === String(amt) ? "default" : "outline"}
+                size="sm"
+                className="h-8 text-xs"
+                onClick={() => setPayableAmount(String(amt))}
+              >
+                ₹{(amt / 1000).toLocaleString()}k
+              </Button>
+            ))}
+          </div>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">₹</span>
             <Input
-              id="payable-amount"
-              placeholder="Your monthly commitment (e.g., ₹10,000)"
-              className="pl-8"
+              id={pid("payable-amount")}
+              placeholder="e.g. 10000"
+              className={cn("pl-8", formErrors.payableAmount && "border-destructive ring-destructive/20")}
               value={payableAmount}
               onChange={(e) => setPayableAmount(e.target.value)}
               type="number"
               min="0"
+              aria-invalid={!!formErrors.payableAmount}
+              aria-describedby={formErrors.payableAmount ? pid("err-payable") : undefined}
             />
           </div>
+          {formErrors.payableAmount && (
+            <p id={pid("err-payable")} className="text-sm text-destructive">
+              {formErrors.payableAmount}
+            </p>
+          )}
         </div>
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="duration" className="text-sm font-medium">
-              Duration in Months 📅
+            <Label htmlFor={pid("duration")} className="text-sm font-medium">
+              {terms.duration}
             </Label>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-6 w-6">
+                  <Button variant="ghost" size="icon" className="h-6 w-6" aria-label="Help: duration">
                     <HelpCircle className="h-4 w-4 text-muted-foreground" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="w-60">
-                  <p>The total number of monthly payments you'll make 📅</p>
+                  <p>{terms.tooltips.duration}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
-          <Select
-            value={durationMonths}
-            onValueChange={setDurationMonths}
-          >
-            <SelectTrigger id="duration">
-              <SelectValue placeholder="How long is your chitti? (e.g., 24)" />
+          <Select value={durationMonths} onValueChange={setDurationMonths}>
+            <SelectTrigger
+              id={pid("duration")}
+              className={cn(formErrors.durationMonths && "border-destructive")}
+              aria-invalid={!!formErrors.durationMonths}
+            >
+              <SelectValue placeholder="Select duration" />
             </SelectTrigger>
             <SelectContent>{monthOptions}</SelectContent>
           </Select>
+          {formErrors.durationMonths && (
+            <p className="text-sm text-destructive">{formErrors.durationMonths}</p>
+          )}
         </div>
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="received-amount" className="text-sm font-medium">
-              Final Payout 💰
+            <Label htmlFor={pid("received-amount")} className="text-sm font-medium">
+              {terms.receivedAmount}
             </Label>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-6 w-6">
+                  <Button variant="ghost" size="icon" className="h-6 w-6" aria-label="Help: final payout">
                     <HelpCircle className="h-4 w-4 text-muted-foreground" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="w-60">
-                  <p>The big reward at the end 💰</p>
+                  <p>{terms.tooltips.receivedAmount}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">₹</span>
             <Input
-              id="received-amount"
-              placeholder="The big reward at the end"
-              className="pl-8"
+              id={pid("received-amount")}
+              placeholder="Expected lump sum"
+              className={cn("pl-8", formErrors.receivedAmount && "border-destructive")}
               value={receivedAmount}
               onChange={(e) => setReceivedAmount(e.target.value)}
               type="number"
               min="0"
+              aria-invalid={!!formErrors.receivedAmount}
             />
           </div>
+          {formErrors.receivedAmount && (
+            <p className="text-sm text-destructive">{formErrors.receivedAmount}</p>
+          )}
         </div>
 
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="start-date" className="text-sm font-medium">
-              First Payment Date 📅
+          <div className="flex items-center justify-between gap-2">
+            <Label htmlFor={pid("start-date")} className="text-sm font-medium">
+              {terms.startDate}
             </Label>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-6 w-6">
+                  <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" aria-label="Help: start date">
                     <HelpCircle className="h-4 w-4 text-muted-foreground" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="w-60">
-                  <p>When did/will you start paying? 📅</p>
+                  <p>{terms.tooltips.startDate}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="outline" size="sm" className="h-8 text-xs" onClick={() => setStartDate(new Date())}>
+              Today
+            </Button>
+            <Button type="button" variant="outline" size="sm" className="h-8 text-xs" onClick={() => setStartDate(subYears(new Date(), 1))}>
+              1 year ago
+            </Button>
+            <Button type="button" variant="outline" size="sm" className="h-8 text-xs" onClick={() => setStartDate(subYears(new Date(), 2))}>
+              2 years ago
+            </Button>
           </div>
           <Popover>
             <PopoverTrigger asChild>
@@ -195,8 +274,10 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
                 variant="outline"
                 className={cn(
                   "w-full justify-start text-left font-normal",
-                  !startDate && "text-muted-foreground"
+                  !startDate && "text-muted-foreground",
+                  formErrors.startDate && "border-destructive"
                 )}
+                id={pid("start-date")}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
@@ -212,10 +293,13 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
               />
             </PopoverContent>
           </Popover>
+          {formErrors.startDate && (
+            <p className="text-sm text-destructive">{formErrors.startDate}</p>
+          )}
         </div>
       </CardContent>
       <CardFooter className="pt-2 pb-4">
-        <Button 
+        <Button
           className="w-full bg-gradient-to-r from-purple-600 to-purple-400 hover:from-purple-700 hover:to-purple-500 transition-all transform hover:scale-[0.99] text-white py-6 text-lg font-semibold"
           onClick={handleCalculate}
           disabled={isCalculating}
@@ -223,10 +307,10 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
           {isCalculating ? (
             <>
               <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
-              Crunching Numbers... 🔄
+              {terms.loading}
             </>
           ) : (
-            "Show Me the Money! 💥"
+            terms.calculate
           )}
         </Button>
       </CardFooter>

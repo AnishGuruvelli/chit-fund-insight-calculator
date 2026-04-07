@@ -1,22 +1,35 @@
-import React from 'react';
-import { WHATSAPP_SHARE_TEMPLATE } from '@/constants/ui';
-import { ShareData } from '@/types/ui';
-import { MessageSquare } from 'lucide-react';
+import React from "react";
+import { WHATSAPP_SHARE_TEMPLATE } from "@/constants/ui";
+import { ShareData } from "@/types/ui";
+import { MessageSquare, Copy } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 interface ShareResultsProps {
   data: ShareData;
 }
 
 const ShareResults: React.FC<ShareResultsProps> = ({ data }) => {
+  const summaryText = WHATSAPP_SHARE_TEMPLATE.formatData(data);
+
   const handleWhatsAppShare = () => {
-    const text = WHATSAPP_SHARE_TEMPLATE.formatData(data);
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
-    window.open(whatsappUrl, '_blank');
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(summaryText)}`;
+    window.open(whatsappUrl, "_blank");
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(summaryText);
+      toast.success("Summary copied — paste anywhere you like");
+    } catch {
+      toast.error("Could not copy to clipboard");
+    }
   };
 
   return (
-    <div className="bg-white rounded-lg p-4 md:p-6 shadow-md">      
+    <div className="bg-card rounded-lg p-4 md:p-6 shadow-md border border-border space-y-3">
       <button
+        type="button"
         onClick={handleWhatsAppShare}
         className="w-full flex items-center justify-center gap-2 p-4 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors text-lg"
       >
@@ -24,11 +37,16 @@ const ShareResults: React.FC<ShareResultsProps> = ({ data }) => {
         Brag on WhatsApp 💪
       </button>
 
-      <p className="mt-4 text-sm text-gray-500 text-center">
+      <Button type="button" variant="outline" className="w-full gap-2" size="lg" onClick={handleCopy}>
+        <Copy className="h-5 w-5" />
+        Copy summary
+      </Button>
+
+      <p className="text-sm text-muted-foreground text-center">
         Share your smart investment choice with friends!
       </p>
     </div>
   );
 };
 
-export default ShareResults; 
+export default ShareResults;

@@ -15,7 +15,7 @@ const ChittiLingoToggle: React.FC<ChittiLingoToggleProps> = ({ isLocal, onToggle
       animate={{ opacity: 1, y: 0 }}
       className="flex items-center justify-end space-x-2 mb-4"
     >
-      <Label htmlFor="lingo-mode" className="text-sm text-gray-600 cursor-pointer">
+      <Label htmlFor="lingo-mode" className="text-sm text-muted-foreground cursor-pointer">
         {isLocal ? '🗣️ Local Mode' : '📊 Formal Mode'}
       </Label>
       <Switch

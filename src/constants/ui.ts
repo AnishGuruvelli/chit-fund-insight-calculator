@@ -33,21 +33,42 @@ export const XIRR_BADGES: XIRRBadges = {
   }
 };
 
+export const INPUT_TOOLTIPS = {
+  monthlyPayment: "How much do you pay each month towards your chitti? 💸",
+  duration: "The total number of monthly payments you'll make 📅",
+  receivedAmount: "The lump sum amount you receive at the end 💰",
+  startDate: "When did/will you start paying? 📅",
+};
+
 export const CHITTI_TERMS: ChittiLanguageOptions = {
   formal: {
     monthlyPayment: "Monthly Investment 💸",
     duration: "Duration in Months 📅",
     receivedAmount: "Final Payout 💰",
     startDate: "First Payment Date 📅",
-    calculate: "Show Me the Money! 💥"
+    calculate: "Show Me the Money! 💥",
+    loading: "Crunching Numbers... 🔄",
+    tooltips: {
+      monthlyPayment: INPUT_TOOLTIPS.monthlyPayment,
+      duration: INPUT_TOOLTIPS.duration,
+      receivedAmount: INPUT_TOOLTIPS.receivedAmount,
+      startDate: INPUT_TOOLTIPS.startDate,
+    },
   },
   local: {
     monthlyPayment: "Monthly Khaata 💸",
     duration: "Kitne Mahine 📅",
     receivedAmount: "Final Lifafa 💰",
     startDate: "Shuruat Ki Tareekh 📅",
-    calculate: "Paisa Hi Paisa! 💥"
-  }
+    calculate: "Paisa Hi Paisa! 💥",
+    loading: "Hisab Ho Raha Hai... 🔄",
+    tooltips: {
+      monthlyPayment: "Har mahine kitna jam karte ho? 💸",
+      duration: "Kitni baar / kitne mahine tak? 📅",
+      receivedAmount: "Ant mein kitna lifafa milega? 💰",
+      startDate: "Pehli baar kab se diya jaega? 📅",
+    },
+  },
 };
 
 export const INVESTMENT_COMPARISONS: InvestmentComparison[] = [
@@ -148,13 +169,6 @@ export const PERFORMANCE_LEVELS: PerformanceLevel[] = [
     icon: "🤔"
   }
 ];
-
-export const INPUT_TOOLTIPS = {
-  monthlyPayment: "How much do you pay each month towards your chitti? 💸",
-  duration: "The total number of monthly payments you'll make 📅",
-  receivedAmount: "The lump sum amount you receive at the end 💰",
-  startDate: "When did/will you start paying? 📅"
-};
 
 export const BUTTON_STATES = {
   initial: "Show Me the Money! 💥",

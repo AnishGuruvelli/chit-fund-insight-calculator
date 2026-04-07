@@ -11,3 +11,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </HashRouter>
   </React.StrictMode>,
 )
+
+// PWA: update SW when vite-plugin-pwa registers a new version
+if ('serviceWorker' in navigator) {
+  import('virtual:pwa-register').then(({ registerSW }) => {
+    registerSW({ immediate: true })
+  }).catch(() => {
+    /* dev or plugin not loaded */
+  })
+}
