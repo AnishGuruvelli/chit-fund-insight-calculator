@@ -39,7 +39,7 @@ export function TwoSchemeCompareInsight({
           Head-to-head (this session)
         </div>
 
-        <div className="grid grid-cols-2 gap-3 text-sm mb-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mb-3 min-w-0">
           <div className={cn("rounded-lg p-3 border", winner === "a" && "ring-2 ring-primary/50 bg-background")}>
             <div className="text-xs text-muted-foreground mb-1">{labelA}</div>
             <div className="text-lg font-bold tabular-nums">{pctA.toFixed(2)}%</div>

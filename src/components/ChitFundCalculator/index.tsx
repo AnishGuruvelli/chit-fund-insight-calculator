@@ -32,7 +32,7 @@ interface CompareSchemeState {
 function emptyCompareScheme(): CompareSchemeState {
   return {
     payableAmount: "",
-    durationMonths: "24",
+    durationMonths: "20",
     receivedAmount: "",
     startDate: new Date(),
     formErrors: {},
@@ -120,9 +120,9 @@ const ChitFundCalculator: React.FC = () => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved) as { durationMonths?: string };
-      return parsed.durationMonths || "24";
+      return parsed.durationMonths || "20";
     }
-    return "24";
+    return "20";
   });
 
   const [receivedAmount, setReceivedAmount] = useState<string>(() => {
@@ -205,9 +205,9 @@ const ChitFundCalculator: React.FC = () => {
   };
 
   const handleTryExample = () => {
-    setPayableAmount("10000");
-    setDurationMonths("24");
-    setReceivedAmount("250000");
+    setPayableAmount("25000");
+    setDurationMonths("20");
+    setReceivedAmount("600000");
     setStartDate(new Date());
     setFormErrors({});
     resetCalculation();
@@ -216,7 +216,7 @@ const ChitFundCalculator: React.FC = () => {
 
   const handleResetForm = () => {
     setPayableAmount("");
-    setDurationMonths("24");
+    setDurationMonths("20");
     setReceivedAmount("");
     setStartDate(new Date());
     setFormErrors({});
@@ -228,9 +228,9 @@ const ChitFundCalculator: React.FC = () => {
     if (side === "a") {
       updater((s) => ({
         ...s,
-        payableAmount: "10000",
-        durationMonths: "24",
-        receivedAmount: "250000",
+        payableAmount: "25000",
+        durationMonths: "20",
+        receivedAmount: "600000",
         startDate: new Date(),
         formErrors: {},
         result: null,
@@ -239,9 +239,9 @@ const ChitFundCalculator: React.FC = () => {
     } else {
       updater((s) => ({
         ...s,
-        payableAmount: "15000",
-        durationMonths: "20",
-        receivedAmount: "320000",
+        payableAmount: "18000",
+        durationMonths: "24",
+        receivedAmount: "500000",
         startDate: new Date(),
         formErrors: {},
         result: null,
@@ -540,7 +540,7 @@ Monthly: ₹${s.payableAmount} | ${s.durationMonths} mo | Received: ₹${s.recei
     compareMode && schemeA.result && schemeB.result && schemeA.totalPaid != null && schemeB.totalPaid != null;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full min-w-0 max-w-full overflow-x-hidden">
       <ChittiLingoToggle isLocal={isChittiLocal} onToggle={setIsChittiLocal} />
 
       <div
@@ -618,8 +618,8 @@ Monthly: ₹${s.payableAmount} | ${s.durationMonths} mo | Received: ₹${s.recei
             />
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start">
-            <div className="space-y-6 min-w-0">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 xl:gap-8 items-start w-full min-w-0">
+            <div className="space-y-6 min-w-0 max-w-full overflow-x-hidden">
               <ChitFundCalculatorForm
                 terms={terms}
                 schemeHeader={SCHEME_A_LABEL}
@@ -659,7 +659,7 @@ Monthly: ₹${s.payableAmount} | ${s.durationMonths} mo | Received: ₹${s.recei
               )}
             </div>
 
-            <div className="space-y-6 min-w-0">
+            <div className="space-y-6 min-w-0 max-w-full overflow-x-hidden">
               <ChitFundCalculatorForm
                 terms={terms}
                 schemeHeader={SCHEME_B_LABEL}

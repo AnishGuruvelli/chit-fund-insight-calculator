@@ -71,7 +71,7 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
   const journeySummary = `You invested ₹${inputData.payableAmount.toLocaleString()} per month for ${inputData.durationMonths} months (₹${inputData.totalPaid.toLocaleString()} total), then received ₹${inputData.receivedAmount.toLocaleString()}.`;
 
   return (
-    <Card className="w-full shadow-lg border-purple-200/20 dark:border-purple-900/40 overflow-hidden animate-fade-in">
+    <Card className="w-full max-w-full min-w-0 shadow-lg border-purple-200/20 dark:border-purple-900/40 overflow-hidden animate-fade-in">
       <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-400 text-white rounded-t-lg">
         <div className="flex justify-between items-center gap-2">
           <CardTitle className="text-xl font-bold">
@@ -149,11 +149,9 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
 
         {!compact && <PerformanceBadge xirr={result.xirr} />}
 
-        {!compact && <InvestmentComparison xirr={result.xirr} />}
-
-        {!compact && <ShareResults data={shareData} />}
-
         <p className="text-sm text-center text-muted-foreground leading-relaxed px-1">{journeySummary}</p>
+
+        {!compact && <InvestmentComparison xirr={result.xirr} minimal />}
 
         <ChitFundResultsChart
           cashFlows={result.cashFlows}
@@ -165,6 +163,8 @@ const ChitFundResults: React.FC<ChitFundResultsProps> = ({
             * XIRR considers the timing of cash flows to calculate the effective annual return rate
           </p>
         </div>
+
+        {!compact && <ShareResults data={shareData} />}
       </CardContent>
 
       <CardFooter className="flex justify-between pt-2 pb-3 space-x-2">

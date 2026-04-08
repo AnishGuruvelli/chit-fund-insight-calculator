@@ -52,7 +52,7 @@ const FeatureCard = ({ icon, title, description, color }: {
     variants={itemVariants}
     whileHover={{ scale: 1.05, y: -10 }}
     whileTap={{ scale: 0.95 }}
-    className={`rounded-lg p-4 md:p-6 shadow-lg transition-all ${color} text-white overflow-hidden relative group backdrop-blur-sm`}
+    className={`rounded-lg p-4 md:p-6 shadow-lg transition-all ${color} text-white overflow-hidden relative group backdrop-blur-sm max-w-full`}
   >
     <motion.div
       variants={backgroundVariants}
@@ -111,16 +111,21 @@ const Index = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="min-h-screen w-full bg-gradient-to-b from-purple-100 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950"
+            className="min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-gradient-to-b from-purple-100 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950"
           >
             <FirstVisitOnboarding />
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
-              className="w-full bg-gradient-to-r from-purple-600 to-purple-400 text-white py-16 md:py-20 px-4 relative overflow-hidden"
+              className="w-full max-w-[100vw] bg-gradient-to-r from-purple-600 to-purple-400 text-white relative overflow-hidden pt-[max(2.5rem,env(safe-area-inset-top,0px)+0.75rem)] pb-12 md:pb-16 px-4 sm:px-5"
             >
-              <div className="absolute top-4 right-4 z-20">
+              <div
+                className="absolute z-20 right-4 sm:right-5"
+                style={{
+                  top: "max(1rem, calc(env(safe-area-inset-top, 0px) + 0.25rem))",
+                }}
+              >
                 <ThemeToggle />
               </div>
               <motion.div
@@ -135,12 +140,12 @@ const Index = () => {
                 }}
                 className="absolute top-0 right-0 w-96 h-96 bg-purple-300 rounded-full filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"
               />
-              <div className="max-w-4xl mx-auto text-center relative z-10">
+              <div className="max-w-4xl mx-auto text-center relative z-10 px-10 sm:px-0">
                 <motion.h1 
                   initial={{ scale: 0.8 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.5, type: "spring" }}
-                  className="text-3xl md:text-5xl font-bold mb-4 flex items-center justify-center gap-2"
+                  className="text-3xl md:text-5xl font-bold mb-4 flex items-center justify-center gap-3 md:gap-4"
                 >
                   <motion.span
                     animate={{ rotate: [0, 10, -10, 0] }}
@@ -169,14 +174,14 @@ const Index = () => {
               </div>
             </motion.div>
 
-            {/* Main Content with increased spacing */}
-            <div className="max-w-4xl mx-auto px-4 py-12 md:py-16">
+            {/* Main Content with increased spacing — extra horizontal padding + bottom safe area for Android nav */}
+            <div className="max-w-6xl mx-auto w-full min-w-0 px-4 sm:px-6 py-10 md:py-16 pb-[calc(2.5rem+env(safe-area-inset-bottom))]">
               {/* Features Grid */}
-              <motion.div 
+              <motion.div
                 variants={containerVariants}
                 initial="hidden"
                 animate="show"
-                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12"
+                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12 w-full min-w-0 overflow-x-hidden"
               >
                 <FeatureCard
                   icon={<Calculator className="h-6 w-6 md:h-8 md:w-8" />}
@@ -199,17 +204,16 @@ const Index = () => {
               </motion.div>
 
               {/* Calculator */}
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ 
-                  duration: 0.5, 
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.45,
                   delay: 0.6,
                   type: "spring",
-                  bounce: 0.3
+                  bounce: 0.25,
                 }}
-                className="bg-white/90 dark:bg-card/90 backdrop-blur-sm rounded-lg shadow-xl p-4 md:p-6 border border-purple-100 dark:border-purple-900/50"
-                whileHover={{ boxShadow: "0 20px 25px -5px rgba(147, 51, 234, 0.1), 0 10px 10px -5px rgba(147, 51, 234, 0.04)" }}
+                className="w-full min-w-0 max-w-full overflow-x-hidden bg-white/90 dark:bg-card/90 backdrop-blur-sm rounded-lg shadow-xl p-4 sm:p-5 md:p-6 border border-purple-100 dark:border-purple-900/50"
               >
                 <ChitFundCalculator />
               </motion.div>

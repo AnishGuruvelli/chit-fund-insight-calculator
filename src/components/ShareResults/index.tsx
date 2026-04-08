@@ -27,7 +27,7 @@ const ShareResults: React.FC<ShareResultsProps> = ({ data }) => {
   };
 
   return (
-    <div className="bg-card rounded-lg p-4 md:p-6 shadow-md border border-border space-y-3">
+    <div className="p-0 space-y-3">
       <button
         type="button"
         onClick={handleWhatsAppShare}
