@@ -25,7 +25,11 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
       <button
         type="button"
         onClick={onComplete}
-        className="absolute top-6 right-6 z-[60] rounded-full px-4 py-2 text-sm font-medium text-white/90 bg-white/15 hover:bg-white/25 backdrop-blur-sm border border-white/20 transition-colors"
+        className="absolute z-[60] rounded-full px-4 py-2 text-sm font-medium text-white/90 bg-white/15 hover:bg-white/25 backdrop-blur-sm border border-white/20 transition-colors"
+        style={{
+          top: "max(1.25rem, env(safe-area-inset-top, 0px))",
+          right: "max(1.5rem, env(safe-area-inset-right, 0px))",
+        }}
       >
         Skip
       </button>

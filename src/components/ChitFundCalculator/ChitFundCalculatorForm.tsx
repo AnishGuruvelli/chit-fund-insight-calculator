@@ -34,7 +34,7 @@ import { format, subYears } from "date-fns";
 import { CalendarIcon, HelpCircle } from "lucide-react";
 import React from "react";
 
-const QUICK_AMOUNTS = [5_000, 10_000, 25_000, 50_000, 100_000];
+const QUICK_AMOUNTS = [5_000, 10_000, 25_000, 50_000];
 
 export type FormFieldKey = "payableAmount" | "durationMonths" | "receivedAmount" | "startDate";
 
@@ -96,7 +96,7 @@ const ChitFundCalculatorForm: React.FC<ChitFundCalculatorFormProps> = ({
   const pid = (s: string) => (fieldIdPrefix ? `${fieldIdPrefix}${s}` : s);
 
   return (
-    <Card className="w-full shadow-lg border-purple-200/20 dark:border-purple-900/40">
+    <Card className="w-full max-w-full min-w-0 overflow-hidden shadow-lg border-purple-200/20 dark:border-purple-900/40">
       <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-400 text-white rounded-t-lg">
         <CardTitle className={schemeHeader ? "text-xl font-bold" : "text-2xl font-bold"}>
           {schemeHeader ?? "Smart math for smarter investments"}

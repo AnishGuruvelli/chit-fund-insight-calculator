@@ -8,6 +8,19 @@ interface SearchHistoryProps {
   onRefresh: () => void;
 }
 
+const getIstDummyTitle = (timestamp: string | number | Date) => {
+  const dt = new Date(timestamp);
+  return `Calculation ${dt.toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  })}`;
+};
+
 export const SearchHistory: React.FC<SearchHistoryProps> = ({ onLoadEntry, onRefresh }) => {
   const [entries, setEntries] = useState<SearchHistoryEntry[]>([]);
   const [isEditing, setIsEditing] = useState<string | null>(null);
@@ -81,6 +94,7 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({ onLoadEntry, onRef
 
       <div className="space-y-3 max-h-[400px] overflow-y-auto">
         {entries.map((entry) => {
+          const displayTitle = entry.label?.trim() || getIstDummyTitle(entry.timestamp);
           const monthlyPayment = Math.abs(entry.cashFlows.find((cf) => cf.amount < 0)?.amount || 0);
           const duration = entry.cashFlows.filter((cf) => cf.amount < 0).length;
           const receivedAmount = entry.cashFlows.find((cf) => cf.amount > 0)?.amount || 0;
@@ -123,10 +137,10 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({ onLoadEntry, onRef
                     </div>
                   ) : (
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="font-medium">{entry.label || "Unnamed calculation"}</span>
+                      <span className="font-medium">{displayTitle}</span>
                       <button
                         type="button"
-                        onClick={() => handleEditLabel(entry.id, entry.label || "")}
+                        onClick={() => handleEditLabel(entry.id, entry.label || displayTitle)}
                         className="text-muted-foreground hover:text-foreground p-1 rounded"
                         aria-label="Rename calculation"
                       >
