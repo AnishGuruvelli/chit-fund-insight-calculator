@@ -111,14 +111,14 @@ const Index = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-gradient-to-b from-purple-100 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950"
+            className="min-h-screen w-full overflow-x-hidden bg-gradient-to-b from-purple-100 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950"
           >
             <FirstVisitOnboarding />
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
-              className="w-full max-w-[100vw] bg-gradient-to-r from-purple-600 to-purple-400 text-white relative overflow-hidden pt-[max(2.5rem,env(safe-area-inset-top,0px)+0.75rem)] pb-12 md:pb-16 px-4 sm:px-5"
+              className="w-full bg-gradient-to-r from-purple-600 to-purple-400 text-white relative overflow-hidden pt-[max(2.5rem,env(safe-area-inset-top,0px)+0.75rem)] pb-12 md:pb-16 px-4 sm:px-5"
             >
               <div
                 className="absolute z-20 right-4 sm:right-5"
